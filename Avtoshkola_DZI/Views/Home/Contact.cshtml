@@ -1,0 +1,94 @@
+@{
+    ViewData["Title"] = "Контакти";
+}
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Свържете се с нас</h1>
+        <p class="page-subtitle">Ние сме тук да ви помогнем</p>
+    </div>
+</section>
+
+<section class="contact-section">
+    <div class="container-contact">
+        <div class="contact-info mb-4">
+            <h2 class="mb-2">Контактна информация</h2>
+            <p class="contact-intro mb-4">
+                Не се колебайте да се свържете с нас за всякакви въпроси относно нашите курсове,
+                услуги или регистрация. Обадете ни се по телефона или ни пишете на имейл.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="contact-card-icon mb-2">
+                            <i class="fas fa-map-marker-alt fa-2x contact-icon-color"></i>
+                        </div>
+                        <h3 class="h5">Адрес</h3>
+                        <p class="mb-0 text-muted">бул. Витоша 123<br>София 1000, България</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="contact-card-icon mb-2">
+                            <i class="fas fa-phone fa-2x contact-icon-color"></i>
+                        </div>
+                        <h3 class="h5">Телефон</h3>
+                        <p class="mb-0 text-muted">+359 2 123 4567<br>+359 888 123 456</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="contact-card-icon mb-2">
+                            <i class="fas fa-envelope fa-2x contact-icon-color"></i>
+                        </div>
+                        <h3 class="h5">Имейл</h3>
+                        <p class="mb-0 text-muted">info@avtoshkola.bg<br>registraciq@avtoshkola.bg</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="contact-card-icon mb-2">
+                            <i class="fas fa-clock fa-2x contact-icon-color"></i>
+                        </div>
+                        <h3 class="h5">Работно време</h3>
+                        <p class="mb-0 text-muted">Пн–Пт: 08:00 – 18:00<br>Съб: 09:00 – 14:00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5 align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h3 class="h4 mb-3">Как да ни намерите</h3>
+                <p class="text-muted">
+                    Офисът ни се намира в центъра на София, в близост до метростанция. Можете да ни посетите в работно време за консултация или да се запишете на курс. Препоръчваме предварително да се обадите за запис.
+                </p>
+                <p class="text-muted mb-0">
+                    За бърза регистрация като студент използвайте бутона вдясно или от менюто <strong>Регистрация</strong>.
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm bg-light">
+                    <div class="card-body p-4 text-center">
+                        <h4 class="h5 mb-3">Готови сте да започнете?</h4>
+                        <p class="text-muted small mb-4">Регистрирайте се като студент и подайте заявка за курс.</p>
+                        <a asp-controller="RegisterStudent" asp-action="Index" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-user-plus me-1"></i> Регистрация като студент
+                        </a>
+                        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-1"></i> Вход
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,48 @@
+@model Avtoshkola_DZI.Data.Category
+@{
+    ViewData["Title"] = "Добави категория";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Добави категория</h1>
+        <p class="page-subtitle">Категории за обучение: B, C, D, A и др.</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Name" class="form-label">Име на категория (напр. Категория B)</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label">Описание</label>
+                            <input asp-for="Description" class="form-control" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <hr class="my-4" />
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn-modern btn-primary-modern">
+                            <i class="fas fa-plus"></i> Запази
+                        </button>
+                        <a asp-action="Index" class="btn-modern btn-secondary-modern">
+                            <i class="fas fa-arrow-left"></i> Назад
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

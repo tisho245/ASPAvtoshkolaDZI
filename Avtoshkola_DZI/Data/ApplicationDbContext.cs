@@ -19,6 +19,10 @@ namespace Avtoshkola_DZI.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Client>()
+                .Property(c => c.PhotoData)
+                .HasColumnType("varbinary(max)");
+
             builder.Entity<Course>()
                 .Property(c => c.Price)
                 .HasPrecision(18, 2);

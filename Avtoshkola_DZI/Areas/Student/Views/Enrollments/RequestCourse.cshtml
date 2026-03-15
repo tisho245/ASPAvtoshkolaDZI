@@ -1,0 +1,67 @@
+@{
+    ViewData["Title"] = "Заявка / записване за курс";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Заяви курс</h1>
+        <p class="page-subtitle">Изберете курс, инструктор и автомобил</p>
+    </div>
+</section>
+
+<section class="contact-section">
+    <div class="container-contact">
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <h2 class="h4 mb-3">Информация</h2>
+                <p class="contact-intro">
+                    Изберете текущ курс, инструктор и автомобил. Вие сте курсистът по заявката,
+                    а датата и часът на заявката се записват автоматично в системата.
+                </p>
+                <ul class="privacy-list">
+                    <li>
+                        <i class="fas fa-info-circle"></i>
+                        <span>След одобрение от администратор или инструктор заявката ще се превърне в активен запис.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-clock"></i>
+                        <span>Можете да следите напредъка си в секцията <strong>Моят прогрес</strong>.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <div class="contact-form-wrapper">
+                    <h2 class="h4 mb-3">Форма за заявка</h2>
+                    <form asp-action="RequestCourse" method="post" class="contact-form">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                        <div class="form-group-modern">
+                            <label class="form-label">Текущ курс</label>
+                            <select name="courseInstanceId" class="form-control" asp-items="ViewBag.CourseInstanceId" required>
+                                <option value="">— Изберете курс —</option>
+                            </select>
+                        </div>
+                        <div class="form-group-modern">
+                            <label class="form-label">Инструктор</label>
+                            <select name="instructorId" class="form-control" asp-items="ViewBag.InstructorId" required>
+                                <option value="">— Изберете инструктор —</option>
+                            </select>
+                        </div>
+                        <div class="form-group-modern">
+                            <label class="form-label">Автомобил</label>
+                            <select name="vehicleId" class="form-control" asp-items="ViewBag.VehicleId" required>
+                                <option value="">— Изберете автомобил —</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-modern btn-primary-modern w-100 mb-2">
+                            <span>Изпрати заявка</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                        <a asp-action="Index" asp-controller="Home" asp-area="Student" class="btn-modern btn-secondary-modern w-100">
+                            <span>Отказ</span>
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

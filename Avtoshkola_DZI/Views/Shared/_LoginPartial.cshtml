@@ -1,4 +1,4 @@
-﻿@using Avtoshkola_DZI.Data
+@using Avtoshkola_DZI.Data
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<Client> SignInManager
 @inject UserManager<Client> UserManager
@@ -6,22 +6,58 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    var user = await UserManager.GetUserAsync(User);
+    var displayName = user?.UserName ?? User.Identity?.Name ?? "Потребител";
+    var email = user?.Email ?? "";
+    var isAdmin = User.IsInRole(RoleNames.Administrator);
+    var isInstructor = User.IsInRole(RoleNames.Instructor);
+    var isStudent = User.IsInRole(RoleNames.Student);
+    var roleLabel = isAdmin ? "Администратор" : isInstructor ? "Инструктор" : isStudent ? "Курсист" : "Потребител";
+
+    string avatarDataUrl = null;
+    if (user?.PhotoData != null && user.PhotoData.Length > 0)
+    {
+        var ct = "image/jpeg";
+        if (user.PhotoData.Length >= 4 && user.PhotoData[0] == 0x89 && user.PhotoData[1] == 0x50 && user.PhotoData[2] == 0x4E && user.PhotoData[3] == 0x47) ct = "image/png";
+        else if (user.PhotoData.Length >= 3 && user.PhotoData[0] == 0x47 && user.PhotoData[1] == 0x49 && user.PhotoData[2] == 0x46) ct = "image/gif";
+        else if (user.PhotoData.Length >= 12 && user.PhotoData[0] == 0x52 && user.PhotoData[1] == 0x49 && user.PhotoData[2] == 0x46 && user.PhotoData[3] == 0x46 && user.PhotoData[8] == 0x57 && user.PhotoData[9] == 0x45 && user.PhotoData[10] == 0x42 && user.PhotoData[11] == 0x50) ct = "image/webp";
+        avatarDataUrl = "data:" + ct + ";base64," + Convert.ToBase64String(user.PhotoData);
+    }
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle user-dropdown-toggle" href="#" id="userDropdownToggle" data-bs-toggle="dropdown" aria-expanded="false">
+            @if (!string.IsNullOrEmpty(avatarDataUrl))
+            {
+                <img src="@avatarDataUrl" alt="Профил" class="navbar-avatar" />
+            }
+            else
+            {
+                <i class="fas fa-user-circle"></i>
+            }
+            <span class="user-greeting">Здравей, @(displayName.Length > 15 ? displayName.Substring(0, 12) + "…" : displayName)!</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu" id="userDropdown" aria-labelledby="userDropdownToggle">
+            <li class="dropdown-header">
+                <div class="dropdown-user-info">
+                    <strong>@roleLabel</strong>
+                    <small class="d-block text-muted">@email</small>
+                </div>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="fas fa-user"></i> Моят профил
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="d-inline">
+                    <button type="submit" class="dropdown-item border-0 bg-transparent w-100 text-start">
+                        <i class="fas fa-sign-out-alt"></i> Изход
+                    </button>
+                </form>
+            </li>
+        </ul>
     </li>
 }
 </ul>

@@ -1,0 +1,64 @@
+@model Avtoshkola_DZI.Data.StudentCourseInstance
+@{
+    ViewData["Title"] = "Редактирай записване";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Редактирай записване за курс</h1>
+        <p class="page-subtitle">@(Model.CourseInstances?.Courses?.Name) – @(Model.Student?.FirstName) @(Model.Student?.LastName)</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Курс (текущ курс)</label>
+                            <select name="courseInstanceId" class="form-select" asp-items="ViewBag.CourseInstanceId"></select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Клиент (студент)</label>
+                            <select name="studentId" class="form-select" asp-items="ViewBag.StudentId"></select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Инструктор</label>
+                            <select name="instructorId" class="form-select" asp-items="ViewBag.InstructorId"></select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Автомобил</label>
+                            <select name="vehicleId" class="form-select" asp-items="ViewBag.VehicleId"></select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Дата и час на заявката</label>
+                            <input name="createAt" class="form-control" type="datetime-local" value="@Model.CreateAt.ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Часове теория</label>
+                            <input name="currentTheoryHours" class="form-control" type="number" value="@Model.CurrentTheoryHours" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Часове практика</label>
+                            <input name="currentPracticeHours" class="form-control" type="number" value="@Model.CurrentPracticeHours" />
+                        </div>
+                    </div>
+                    <hr class="my-4" />
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn-modern btn-primary-modern">
+                            <i class="fas fa-save"></i> Запази
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn-modern btn-secondary-modern">Отказ</a>
+                        <a asp-action="Index" class="btn-modern btn-secondary-modern">
+                            <i class="fas fa-arrow-left"></i> Назад
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

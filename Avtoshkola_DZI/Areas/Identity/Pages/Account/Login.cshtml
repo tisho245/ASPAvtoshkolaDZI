@@ -1,0 +1,51 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Вход";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<section class="auth-section">
+    <div class="hero-background">
+        <div class="hero-gradient"></div>
+        <div class="hero-pattern"></div>
+    </div>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Вход</h1>
+                <p>Влезте в системата</p>
+            </div>
+            <form id="account" method="post" class="auth-form">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="form-group">
+                    <label asp-for="Input.Username" class="form-label">Потребителско име</label>
+                    <input asp-for="Input.Username" class="form-control" autocomplete="username" required />
+                    <span asp-validation-for="Input.Username" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password" class="form-label">Парола</label>
+                    <input asp-for="Input.Password" class="form-control" type="password" autocomplete="current-password" required />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input asp-for="Input.RememberMe" class="form-check-input" />
+                        <label asp-for="Input.RememberMe" class="form-check-label">Запомни ме</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Влез</span>
+                </button>
+                <div class="auth-footer">
+                    <p>Нямате акаунт? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Регистрирайте се</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,64 @@
+@model Avtoshkola_DZI.Data.Vehicle
+@{
+    ViewData["Title"] = "Добави автомобил";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Добави автомобил</h1>
+        <p class="page-subtitle">Нов учебен автомобил</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Brand" class="form-label">Марка</label>
+                            <input asp-for="Brand" class="form-control" />
+                            <span asp-validation-for="Brand" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Model" class="form-label">Модел</label>
+                            <input asp-for="Model" class="form-control" />
+                            <span asp-validation-for="Model" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="CategoryId" class="form-label">Категория</label>
+                            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId"></select>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input asp-for="IsAutomatic" class="form-check-input" />
+                                <label asp-for="IsAutomatic" class="form-check-label">Автоматик</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Year" class="form-label">Година</label>
+                            <input asp-for="Year" class="form-control" />
+                            <span asp-validation-for="Year" class="text-danger"></span>
+                        </div>
+                        <div class="col-12 text-muted small">Датата на вписване се задава автоматично.</div>
+                    </div>
+                    <hr class="my-4" />
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn-modern btn-primary-modern">
+                            <i class="fas fa-plus"></i> Запази
+                        </button>
+                        <a asp-action="Index" class="btn-modern btn-secondary-modern">
+                            <i class="fas fa-arrow-left"></i> Назад
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

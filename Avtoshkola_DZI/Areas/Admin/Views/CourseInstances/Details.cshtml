@@ -1,0 +1,47 @@
+@model Avtoshkola_DZI.Data.CourseInstance
+@{
+    ViewData["Title"] = "Детайли текущ курс";
+    var durationDays = (Model.EndDate.ToDateTime(TimeOnly.MinValue) - Model.StartDate.ToDateTime(TimeOnly.MinValue)).Days;
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Детайли текущ курс</h1>
+        <p class="page-subtitle">@(Model.Courses?.Name) – Курс № @Model.Id</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 text-muted">Номер на курс</dt>
+                    <dd class="col-sm-8">@Model.Id</dd>
+                    <dt class="col-sm-4 text-muted">Обучение</dt>
+                    <dd class="col-sm-8">@(Model.Courses?.Name) (ID: @Model.CourseId)</dd>
+                    <dt class="col-sm-4 text-muted">Описание и изисквания</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Description) ? "—" : Model.Description)</dd>
+                    <dt class="col-sm-4 text-muted">Начална дата</dt>
+                    <dd class="col-sm-8">@Model.StartDate.ToString("dd.MM.yyyy")</dd>
+                    <dt class="col-sm-4 text-muted">Крайна дата</dt>
+                    <dd class="col-sm-8">@Model.EndDate.ToString("dd.MM.yyyy")</dd>
+                    <dt class="col-sm-4 text-muted">Продължителност</dt>
+                    <dd class="col-sm-8">@durationDays дни</dd>
+                </dl>
+                <hr class="my-4" />
+                <div class="d-flex gap-2 flex-wrap">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-modern btn-primary-modern btn-sm">
+                        <i class="fas fa-edit"></i> Редактирай
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn-modern btn-danger-modern btn-sm">
+                        <i class="fas fa-trash"></i> Изтрий
+                    </a>
+                    <a asp-action="Index" class="btn-modern btn-secondary-modern btn-sm">
+                        <i class="fas fa-arrow-left"></i> Назад към списъка
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

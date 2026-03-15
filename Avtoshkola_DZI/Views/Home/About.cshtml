@@ -1,0 +1,79 @@
+@{
+    ViewData["Title"] = "За нас";
+}
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">За нас</h1>
+        <p class="page-subtitle">Познайте повече за нашата автошкола</p>
+    </div>
+</section>
+
+<section class="about-section">
+    <div class="container-about">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>Нашата мисия</h2>
+                <p>
+                    Автошколата е създадена с цел да предостави най-доброто обучение и подготовка на бъдещи шофьори.
+                    Нашата мисия е да създадем сигурни, отговорни и уверени шофьори, които са добре подготвени
+                    за пътя.
+                </p>
+                <p>
+                    През годините сме изградили репутация на професионализъм и качество, като сме обучили
+                    хиляди успешни студенти.
+                </p>
+            </div>
+            <div class="about-stats">
+                <div class="about-stat">
+                    <div class="stat-icon-large">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info-large">
+                        <div class="stat-number-large">@(ViewBag.StudentsCount ?? 0)</div>
+                        <div class="stat-label-large">Курсисти в системата</div>
+                    </div>
+                </div>
+                <div class="about-stat">
+                    <div class="stat-icon-large">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="stat-info-large">
+                        <div class="stat-number-large">@(ViewBag.CategoriesCount ?? 0)</div>
+                        <div class="stat-label-large">Категории обучения</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3>Професионализъм</h3>
+                <p>Високо квалифицирани инструктори с дългогодишен опит в обучението</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Безопасност</h3>
+                <p>Приоритет на безопасността и отговорното шофиране</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Индивидуален подход</h3>
+                <p>Внимание към всеки студент и неговите нужди</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Гъвкавост</h3>
+                <p>Адаптиране към графиците и нуждите на студентите</p>
+            </div>
+        </div>
+    </div>
+</section>

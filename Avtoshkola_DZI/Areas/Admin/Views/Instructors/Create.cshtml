@@ -1,0 +1,90 @@
+@model Avtoshkola_DZI.Data.Client
+@{
+    ViewData["Title"] = "Добави инструктор";
+}
+
+<section class="auth-section">
+    <div class="hero-background">
+        <div class="hero-gradient"></div>
+        <div class="hero-pattern"></div>
+    </div>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Добавяне на нов инструктор</h1>
+                <p>Въведете основните данни и квалификация</p>
+            </div>
+            <form asp-action="Create" method="post" class="auth-form" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="form-group">
+                    <label asp-for="UserName" class="form-label">Потребителско име (за вход)</label>
+                    <input asp-for="UserName" class="form-control" autocomplete="username" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="form-label">Име</label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName" class="form-label">Фамилия</label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">E-mail</label>
+                    <input asp-for="Email" class="form-control" type="email" autocomplete="email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Парола (за вход на инструктора)</label>
+                    <input name="password" class="form-control" type="password" value="Test123!" />
+                    <small class="text-muted">По подразбиране: Test123! (може да се смени по-късно)</small>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="form-label">Телефон</label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="LicenseNumber" class="form-label">Номер книжка</label>
+                    <input asp-for="LicenseNumber" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="QualificationDesc" class="form-label">Квалификация и опит</label>
+                    <textarea asp-for="QualificationDesc" class="form-control" rows="2"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="form-label">Допълнително описание</label>
+                    <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="Photo" class="form-label">Снимка</label>
+                    <input type="file" id="Photo" name="Photo" class="form-control" accept="image/*" />
+                </div>
+
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Добави инструктор</span>
+                </button>
+                <div class="auth-footer">
+                    <p><a asp-action="Index">Назад към списъка с инструктори</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

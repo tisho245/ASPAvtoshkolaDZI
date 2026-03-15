@@ -1,0 +1,38 @@
+@model Avtoshkola_DZI.Data.Category
+@{
+    ViewData["Title"] = "Детайли категория";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Детайли категория</h1>
+        <p class="page-subtitle">@Model.Name</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3 text-muted">@Html.DisplayNameFor(m => m.Name)</dt>
+                    <dd class="col-sm-9">@Model.Name</dd>
+                    <dt class="col-sm-3 text-muted">@Html.DisplayNameFor(m => m.Description)</dt>
+                    <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Description) ? "—" : Model.Description)</dd>
+                </dl>
+                <hr class="my-4" />
+                <div class="d-flex gap-2 flex-wrap">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-modern btn-primary-modern btn-sm">
+                        <i class="fas fa-edit"></i> Редактирай
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn-modern btn-danger-modern btn-sm">
+                        <i class="fas fa-trash"></i> Изтрий
+                    </a>
+                    <a asp-action="Index" class="btn-modern btn-secondary-modern btn-sm">
+                        <i class="fas fa-arrow-left"></i> Назад към списъка
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

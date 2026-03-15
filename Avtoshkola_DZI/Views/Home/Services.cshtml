@@ -1,0 +1,51 @@
+@model IEnumerable<Avtoshkola_DZI.Data.Course>
+@{
+    ViewData["Title"] = "Услуги";
+    var iconClasses = new[] { "", "service-icon-2", "service-icon-3", "service-icon-4", "service-icon-5", "service-icon-6" };
+    var icons = new[] { "fa-car", "fa-truck", "fa-bus", "fa-motorcycle", "fa-redo", "fa-book" };
+    var index = 0;
+}
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Нашите услуги</h1>
+        <p class="page-subtitle">Курсове от каталога (данни от БД)</p>
+    </div>
+</section>
+
+<section class="services-section">
+    <div class="container-services">
+        <div class="services-grid">
+            @if (!Model.Any())
+            {
+                <p class="text-muted">Няма регистрирани курсове в момента.</p>
+            }
+            @foreach (var course in Model)
+            {
+                var iconClass = iconClasses[index % iconClasses.Length];
+                var icon = icons[index % icons.Length];
+                index++;
+                <div class="service-card">
+                    <div class="service-icon-large @iconClass">
+                        <i class="fas @icon"></i>
+                    </div>
+                    <h3 class="service-title">@course.Name</h3>
+                    <p class="service-description">
+                        @(course.Description ?? "—")
+                    </p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> @course.TotalTheoryHours часа теория</li>
+                        <li><i class="fas fa-check"></i> @course.TotalPracticeHours часа практика</li>
+                        @if (course.Categories != null)
+                        {
+                            <li><i class="fas fa-check"></i> Категория: @course.Categories.Name</li>
+                        }
+                        @if (course.Price > 0)
+                        {
+                            <li><i class="fas fa-check"></i> Цена: @course.Price.ToString("N2") лв.</li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</section>

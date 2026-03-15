@@ -8,13 +8,30 @@ namespace Avtoshkola_DZI.Data
     {
         private const string DefaultPassword = "Test123!";
 
+        private const string AdminEmail = "admin@avtoshkola.bg";
+
+        private const string SuperAdminUserName = "superadmin";
+        private const string SuperAdminEmail = "superadmin@avtoshkola.bg";
+        private const string SuperAdminPassword = "123!\"£QWe";
+
+        private const string DemoInstructorEmail = "demo.instructor@avtoshkola.bg";
+        private const string DemoStudentEmail = "demo.student@avtoshkola.bg";
+
         public static async Task SeedAsync(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Client>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
             await context.Database.MigrateAsync();
+            await EnsurePhotoDataColumnAsync(context);
+
+            await EnsureRolesAsync(roleManager, userManager);
+            await EnsureAdminUserAsync(userManager);
+            await EnsureSuperAdminUserAsync(userManager);
+            await EnsureDemoUsersHaveRolesAsync(userManager);
+            await EnsureDemoLoginUsersAsync(userManager);
 
             if (await context.Categories.AnyAsync())
                 return;
@@ -127,7 +144,6 @@ namespace Avtoshkola_DZI.Data
                     FirstName = i.FirstName,
                     LastName = i.LastName,
                     Description = i.Desc,
-                    PhotoURL = "/images/avatar.png",
                     CreatedAt = now,
                     LastSignedIn = now,
                     LicenseNumber = "LN-" + Guid.NewGuid().ToString("N")[..8].ToUpper(),
@@ -135,7 +151,10 @@ namespace Avtoshkola_DZI.Data
                 };
                 var result = await userManager.CreateAsync(client, DefaultPassword);
                 if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(client, RoleNames.Instructor);
                     instructorIds.Add(client.Id);
+                }
             }
 
             var studentIds = new List<string>();
@@ -149,13 +168,15 @@ namespace Avtoshkola_DZI.Data
                     FirstName = s.FirstName,
                     LastName = s.LastName,
                     Description = "Курсист",
-                    PhotoURL = "/images/avatar.png",
                     CreatedAt = now,
                     LastSignedIn = now
                 };
                 var result = await userManager.CreateAsync(client, DefaultPassword);
                 if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(client, RoleNames.Student);
                     studentIds.Add(client.Id);
+                }
             }
 
             await context.SaveChangesAsync();
@@ -198,6 +219,168 @@ namespace Avtoshkola_DZI.Data
                 };
                 context.StudentCourseInstances.AddRange(enrollments);
                 await context.SaveChangesAsync();
+            }
+        }
+
+        private static async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager, UserManager<Client> userManager)
+        {
+            foreach (var roleName in new[] { RoleNames.Administrator, RoleNames.Instructor, RoleNames.Student })
+            {
+                if (await roleManager.RoleExistsAsync(roleName)) continue;
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+            await MigrateLegacyRoleToStudentAsync(userManager);
+        }
+
+        /// <summary>Миграция: потребители с остаряла роля в БД се прехвърлят в роля Student.</summary>
+        private static async Task MigrateLegacyRoleToStudentAsync(UserManager<Client> userManager)
+        {
+            const string legacyRoleName = "Kursist"; // историческо име в БД
+            try
+            {
+                var usersInOldRole = await userManager.GetUsersInRoleAsync(legacyRoleName);
+                foreach (var user in usersInOldRole)
+                {
+                    await userManager.RemoveFromRoleAsync(user, legacyRoleName);
+                    if (!await userManager.IsInRoleAsync(user, RoleNames.Student))
+                        await userManager.AddToRoleAsync(user, RoleNames.Student);
+                }
+            }
+            catch
+            {
+                // Ролята може да не съществува
+            }
+        }
+
+        private static async Task EnsureDemoUsersHaveRolesAsync(UserManager<Client> userManager)
+        {
+            var instructorEmails = new[] { "instructor1@avtoshkola.bg", "instructor2@avtoshkola.bg" };
+            foreach (var email in instructorEmails)
+            {
+                var user = await userManager.FindByEmailAsync(email);
+                if (user == null) continue;
+                if (await userManager.IsInRoleAsync(user, RoleNames.Instructor)) continue;
+                await userManager.AddToRoleAsync(user, RoleNames.Instructor);
+            }
+            var studentEmails = new[] { "student1@test.bg", "student2@test.bg", "student3@test.bg" };
+            foreach (var email in studentEmails)
+            {
+                var user = await userManager.FindByEmailAsync(email);
+                if (user == null) continue;
+                if (await userManager.IsInRoleAsync(user, RoleNames.Student)) continue;
+                const string legacyRole = "Kursist";
+                if (await userManager.IsInRoleAsync(user, legacyRole))
+                    await userManager.RemoveFromRoleAsync(user, legacyRole);
+                await userManager.AddToRoleAsync(user, RoleNames.Student);
+            }
+        }
+
+        private static async Task EnsureAdminUserAsync(UserManager<Client> userManager)
+        {
+            if (await userManager.FindByEmailAsync(AdminEmail) != null) return;
+            var now = DateTime.UtcNow;
+            var admin = new Client
+            {
+                UserName = AdminEmail,
+                Email = AdminEmail,
+                EmailConfirmed = true,
+                FirstName = "Администратор",
+                LastName = "Система",
+                CreatedAt = now,
+                LastSignedIn = now,
+                Description = ""
+            };
+            var result = await userManager.CreateAsync(admin, DefaultPassword);
+            if (result.Succeeded)
+                await userManager.AddToRoleAsync(admin, RoleNames.Administrator);
+        }
+
+        private static async Task EnsureSuperAdminUserAsync(UserManager<Client> userManager)
+        {
+            if (await userManager.FindByNameAsync(SuperAdminUserName) != null) return;
+            var now = DateTime.UtcNow;
+            var superAdmin = new Client
+            {
+                UserName = SuperAdminUserName,
+                Email = SuperAdminEmail,
+                EmailConfirmed = true,
+                FirstName = "Tihomir",
+                LastName = "Petkov",
+                CreatedAt = now,
+                LastSignedIn = now,
+                Description = "Super administrator"
+            };
+            var result = await userManager.CreateAsync(superAdmin, SuperAdminPassword);
+            if (result.Succeeded)
+                await userManager.AddToRoleAsync(superAdmin, RoleNames.Administrator);
+        }
+
+        private static async Task EnsureDemoLoginUsersAsync(UserManager<Client> userManager)
+        {
+            var now = DateTime.UtcNow;
+
+            // Demo instructor
+            var demoInstructor = await userManager.FindByEmailAsync(DemoInstructorEmail);
+            if (demoInstructor == null)
+            {
+                demoInstructor = new Client
+                {
+                    UserName = DemoInstructorEmail,
+                    Email = DemoInstructorEmail,
+                    EmailConfirmed = true,
+                    FirstName = "Demo",
+                    LastName = "Instructor",
+                    Description = "Demo instructor account",
+                    CreatedAt = now,
+                    LastSignedIn = now,
+                    LicenseNumber = "LN-DEMO-INST",
+                    QualificationDesc = "Demo instructor for testing"
+                };
+                var result = await userManager.CreateAsync(demoInstructor, DefaultPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(demoInstructor, RoleNames.Instructor);
+                }
+            }
+
+            // Demo student
+            var demoStudent = await userManager.FindByEmailAsync(DemoStudentEmail);
+            if (demoStudent == null)
+            {
+                demoStudent = new Client
+                {
+                    UserName = DemoStudentEmail,
+                    Email = DemoStudentEmail,
+                    EmailConfirmed = true,
+                    FirstName = "Demo",
+                    LastName = "Student",
+                    Description = "Demo student account",
+                    CreatedAt = now,
+                    LastSignedIn = now
+                };
+                var result = await userManager.CreateAsync(demoStudent, DefaultPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(demoStudent, RoleNames.Student);
+                }
+            }
+        }
+
+        /// <summary>Добавя колона PhotoData в AspNetUsers ако липсва (резервна миграция при стартиране).</summary>
+        private static async Task EnsurePhotoDataColumnAsync(ApplicationDbContext context)
+        {
+            try
+            {
+                const string sql = @"
+                    IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'AspNetUsers' AND COLUMN_NAME = N'PhotoData')
+                        ALTER TABLE AspNetUsers ADD PhotoData varbinary(max) NULL;
+                    IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'AspNetUsers' AND COLUMN_NAME = N'PhotoURL')
+                        ALTER TABLE AspNetUsers DROP COLUMN PhotoURL;";
+                await context.Database.ExecuteSqlRawAsync(sql);
+            }
+            catch
+            {
+                // Игнорираме при грешка (напр. вече приложена миграция)
             }
         }
     }

@@ -1,0 +1,71 @@
+@model Avtoshkola_DZI.Data.Client
+@{
+    ViewData["Title"] = "Детайли инструктор";
+    string photoDataUrl = null;
+    if (Model.PhotoData != null && Model.PhotoData.Length > 0)
+    {
+        var ct = "image/jpeg";
+        if (Model.PhotoData.Length >= 4 && Model.PhotoData[0] == 0x89 && Model.PhotoData[1] == 0x50 && Model.PhotoData[2] == 0x4E && Model.PhotoData[3] == 0x47) ct = "image/png";
+        else if (Model.PhotoData.Length >= 3 && Model.PhotoData[0] == 0x47 && Model.PhotoData[1] == 0x49 && Model.PhotoData[2] == 0x46) ct = "image/gif";
+        else if (Model.PhotoData.Length >= 12 && Model.PhotoData[0] == 0x52 && Model.PhotoData[1] == 0x49 && Model.PhotoData[2] == 0x46 && Model.PhotoData[3] == 0x46 && Model.PhotoData[8] == 0x57 && Model.PhotoData[9] == 0x45 && Model.PhotoData[10] == 0x42 && Model.PhotoData[11] == 0x50) ct = "image/webp";
+        photoDataUrl = "data:" + ct + ";base64," + Convert.ToBase64String(Model.PhotoData);
+    }
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Детайли инструктор</h1>
+        <p class="page-subtitle">@Model.FirstName @Model.LastName</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="row align-items-start">
+                    @if (photoDataUrl != null)
+                    {
+                        <div class="col-md-3 text-center mb-3 mb-md-0">
+                            <img src="@photoDataUrl" alt="Снимка" class="img-fluid rounded shadow-sm" style="max-height:180px; object-fit:cover" />
+                        </div>
+                    }
+                    <div class="@(photoDataUrl != null ? "col-md-9" : "col-12")">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4 text-muted">Потребителско име</dt>
+                            <dd class="col-sm-8">@Model.UserName</dd>
+                            <dt class="col-sm-4 text-muted">Име</dt>
+                            <dd class="col-sm-8">@Model.FirstName</dd>
+                            <dt class="col-sm-4 text-muted">Фамилия</dt>
+                            <dd class="col-sm-8">@Model.LastName</dd>
+                            <dt class="col-sm-4 text-muted">E-mail</dt>
+                            <dd class="col-sm-8">@Model.Email</dd>
+                            <dt class="col-sm-4 text-muted">Телефон</dt>
+                            <dd class="col-sm-8">@(Model.PhoneNumber ?? "—")</dd>
+                            <dt class="col-sm-4 text-muted">Номер книжка</dt>
+                            <dd class="col-sm-8">@(Model.LicenseNumber ?? "—")</dd>
+                            <dt class="col-sm-4 text-muted">Квалификация</dt>
+                            <dd class="col-sm-8">@(Model.QualificationDesc ?? "—")</dd>
+                            <dt class="col-sm-4 text-muted">Описание</dt>
+                            <dd class="col-sm-8">@(Model.Description ?? "—")</dd>
+                            <dt class="col-sm-4 text-muted">Дата на вписване</dt>
+                            <dd class="col-sm-8">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+                        </dl>
+                    </div>
+                </div>
+                <hr class="my-4" />
+                <div class="d-flex gap-2 flex-wrap">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-modern btn-primary-modern btn-sm">
+                        <i class="fas fa-edit"></i> Редактирай
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn-modern btn-danger-modern btn-sm">
+                        <i class="fas fa-trash"></i> Изтрий
+                    </a>
+                    <a asp-action="Index" class="btn-modern btn-secondary-modern btn-sm">
+                        <i class="fas fa-arrow-left"></i> Назад към списъка
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

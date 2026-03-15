@@ -1,8 +1,197 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Начало";
 }
+<!-- Hero Section -->
+<section class="hero-modern">
+    <div class="hero-background">
+        <div class="hero-gradient"></div>
+        <div class="hero-pattern"></div>
+    </div>
+    <div class="hero-content-wrapper">
+        <div class="hero-main">
+            <div class="hero-badge">
+                <span>Модерна система за управление</span>
+            </div>
+            <h1 class="hero-heading">
+                Управление на автошкола<br>
+                <span class="gradient-text">на ново ниво</span>
+            </h1>
+            <p class="hero-description">
+                Професионална платформа за управление на студенти, инструктори и графици.
+                Оптимизирайте работата си с интуитивни инструменти и автоматизация.
+            </p>
+            <div class="hero-actions">
+                <a class="btn-modern btn-primary-modern" asp-controller="RegisterStudent" asp-action="Index">
+                    <span>Започнете сега</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a class="btn-modern btn-secondary-modern" asp-area="Identity" asp-page="/Account/Login">
+                    <span>Вход</span>
+                </a>
+            </div>
+        </div>
+        <div class="hero-visual-modern">
+            <div class="visual-card card-1">
+                <div class="card-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-label">Курсисти</span>
+                    <span class="card-value">@(ViewBag.StudentsCount ?? 0)</span>
+                </div>
+            </div>
+            <div class="visual-card card-2">
+                <div class="card-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-label">Записи</span>
+                    <span class="card-value">@(ViewBag.EnrollmentsCount ?? 0)</span>
+                </div>
+            </div>
+            <div class="visual-card card-3">
+                <div class="card-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-label">Курсове</span>
+                    <span class="card-value">@(ViewBag.TotalHours ?? 0)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Stats Section - данни от таблици: Client (роли), StudentCourseInstances, Categories -->
+<section class="stats-modern">
+    <div class="container-stats">
+        <div class="stat-modern">
+            <div class="stat-number-modern">@(ViewBag.StudentsCount ?? 0)</div>
+            <div class="stat-label-modern">Курсисти</div>
+        </div>
+        <div class="stat-modern">
+            <div class="stat-number-modern">@(ViewBag.InstructorsCount ?? 0)</div>
+            <div class="stat-label-modern">Инструктори</div>
+        </div>
+        <div class="stat-modern">
+            <div class="stat-number-modern">@(ViewBag.TotalHours ?? 0)</div>
+            <div class="stat-label-modern">Курсове (теория + практика)</div>
+        </div>
+        <div class="stat-modern">
+            <div class="stat-number-modern">@(ViewBag.CategoriesCount ?? 0)</div>
+            <div class="stat-label-modern">Категории</div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-modern">
+    <div class="container-features">
+        <div class="section-intro">
+            <h2 class="section-title-modern">Всичко необходимо за успех</h2>
+            <p class="section-description-modern">
+                Мощни инструменти за управление на всеки аспект от работата на автошколата
+            </p>
+        </div>
+        <div class="features-grid-modern">
+            <article class="feature-modern">
+                <div class="feature-icon-modern">
+                    <div class="icon-bg icon-bg-1">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <h3 class="feature-title-modern">Управление на студенти</h3>
+                <p class="feature-text-modern">
+                    Пълен контрол над регистрацията, прогреса и документацията на студентите.
+                    Следете теоретичните и практическите часове в реално време.
+                </p>
+            </article>
+            <article class="feature-modern">
+                <div class="feature-icon-modern">
+                    <div class="icon-bg icon-bg-2">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                </div>
+                <h3 class="feature-title-modern">Управление на инструктори</h3>
+                <p class="feature-text-modern">
+                    Организирайте работата на инструкторите, техните графици и назначаване на студенти.
+                    Оптимизирайте разпределението на ресурсите.
+                </p>
+            </article>
+            <article class="feature-modern">
+                <div class="feature-icon-modern">
+                    <div class="icon-bg icon-bg-3">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+                <h3 class="feature-title-modern">Интелигентно планиране</h3>
+                <p class="feature-text-modern">
+                    Планирайте теоретични и практически часове с лекота.
+                    Системата автоматично предотвратява конфликти и ограничава броя часове на ден.
+                </p>
+            </article>
+            <article class="feature-modern">
+                <div class="feature-icon-modern">
+                    <div class="icon-bg icon-bg-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <h3 class="feature-title-modern">Детайлно отчитане</h3>
+                <p class="feature-text-modern">
+                    Следете прогреса на всеки студент с детайлни отчети.
+                    Виждайте колко теоретични и практически часа са завършени.
+                </p>
+            </article>
+            <article class="feature-modern">
+                <div class="feature-icon-modern">
+                    <div class="icon-bg icon-bg-5">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <h3 class="feature-title-modern">Гъвкаво ценообразуване</h3>
+                <p class="feature-text-modern">
+                    Инструкторите могат да задават различни цени в зависимост от категорията
+                    на превозното средство и типа на часа.
+                </p>
+            </article>
+            <article class="feature-modern">
+                <div class="feature-icon-modern">
+                    <div class="icon-bg icon-bg-6">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                </div>
+                <h3 class="feature-title-modern">Безопасност и права</h3>
+                <p class="feature-text-modern">
+                    Различни роли за администратори, инструктори и студенти
+                    с подходящи права за достъп и управление на данни.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Access Section -->
+<section class="quick-access-modern">
+    <div class="container-quick">
+        <div class="section-intro">
+            <h2 class="section-title-modern">Бърз достъп</h2>
+            <p class="section-description-modern">Всички важни функции на едно място</p>
+        </div>
+        <div class="quick-grid-modern">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="quick-item-modern">
+                <div class="quick-icon-modern">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3 class="quick-title-modern">Моите курсове</h3>
+                <p class="quick-text-modern">Преглед на записаните курсове</p>
+            </a>
+            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="quick-item-modern">
+                <div class="quick-icon-modern quick-icon-blue">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h3 class="quick-title-modern">Настройки</h3>
+                <p class="quick-text-modern">Управление на профила</p>
+            </a>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,62 @@
+@page
+@model Avtoshkola_DZI.Areas.Identity.Pages.Account.Manage.EditModel
+@{
+    ViewData["Title"] = "Редактирай профил";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Редактирай профил</h1>
+        <p class="page-subtitle">Промяна на личните данни</p>
+    </div>
+</section>
+
+<section class="students-section">
+    <div class="container-students">
+        <div class="profile-card-wrapper">
+            <div class="auth-card profile-edit-card">
+                <form method="post" class="auth-form" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <div class="form-group">
+                        <label asp-for="Input.FirstName" class="form-label">Име</label>
+                        <input asp-for="Input.FirstName" class="form-control" />
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.LastName" class="form-label">Фамилия</label>
+                        <input asp-for="Input.LastName" class="form-control" />
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.PhoneNumber" class="form-label">Телефон</label>
+                        <input asp-for="Input.PhoneNumber" class="form-control" type="tel" />
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Description" class="form-label">Описание</label>
+                        <textarea asp-for="Input.Description" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Input.Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Photo" class="form-label">Снимка</label>
+                        <input asp-for="Input.Photo" class="form-control" type="file" accept="image/*" />
+                        <span asp-validation-for="Input.Photo" class="text-danger"></span>
+                    </div>
+                    <div class="profile-actions profile-actions-inline">
+                        <button type="submit" class="btn-modern btn-primary-modern">
+                            <i class="fas fa-save"></i> Запази
+                        </button>
+                        <a asp-page="./Index" class="btn-modern btn-secondary-modern">
+                            <i class="fas fa-times"></i> Отказ
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,61 @@
+@model IEnumerable<Avtoshkola_DZI.Data.StudentCourseInstance>
+@{
+    ViewData["Title"] = "Моите записи";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Моите записи</h1>
+        <p class="page-subtitle">Всички ваши записвания за курсове</p>
+    </div>
+</section>
+
+<section class="progress-section">
+    <div class="container-progress">
+        @if (!Model.Any())
+        {
+            <p class="text-muted">Нямате записи. <a asp-action="RequestCourse" asp-controller="Enrollments">Заяви запис за курс</a>.</p>
+        }
+        else
+        {
+            <div class="progress-grid">
+                @foreach (var item in Model)
+                {
+                    var totalHours = item.CurrentTheoryHours + item.CurrentPracticeHours;
+                    <div class="progress-card">
+                        <div class="progress-icon bg-info">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="progress-content">
+                            <h3>@(item.CourseInstances?.Description ?? "Курс")</h3>
+                            <div class="progress-number">@totalHours ч.</div>
+                            <p class="progress-label">
+                                Теория: @item.CurrentTheoryHours ч. · Практика: @item.CurrentPracticeHours ч.
+                            </p>
+                            <p class="progress-label">
+                                @(item.CourseInstances?.Courses?.Name)
+                            </p>
+                            <p class="progress-label">
+                                Инструктор: @(item.Instructor?.FirstName) @(item.Instructor?.LastName)
+                            </p>
+                            <p class="progress-label">
+                                Автомобил: @(item.Vehicles?.Brand) @(item.Vehicles?.Model)
+                            </p>
+                            <p class="progress-label">
+                                Заявка: @item.CreateAt.ToString("dd.MM.yyyy HH:mm")
+                            </p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="mt-4 text-end">
+                <a asp-action="RequestCourse" asp-controller="Enrollments" class="btn-modern btn-primary-modern">
+                    <span>Заяви нов запис за курс</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        }
+    </div>
+</section>
+

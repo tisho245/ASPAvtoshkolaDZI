@@ -1,0 +1,56 @@
+@model IEnumerable<Avtoshkola_DZI.Data.Client>
+@{
+    ViewData["Title"] = "Инструктори";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Инструктори</h1>
+        <p class="page-subtitle">Списък с всички налични инструктори</p>
+    </div>
+</section>
+
+<section class="list-section">
+    <div class="container">
+        @if (!Model.Any())
+        {
+            <p class="text-muted">Няма регистрирани инструктори.</p>
+        }
+        else
+        {
+            <div class="cards-grid">
+                @foreach (var i in Model)
+                {
+                    <article class="card-modern">
+                        <div class="card-modern-header">
+                            <h3>@(i.FirstName) @(i.LastName)</h3>
+                            <p class="text-muted">@i.Email</p>
+                        </div>
+                        <div class="card-modern-body">
+                            @if (!string.IsNullOrWhiteSpace(i.Description))
+                            {
+                                <p>@i.Description</p>
+                            }
+                            <ul class="card-meta">
+                                @if (!string.IsNullOrWhiteSpace(i.QualificationDesc))
+                                {
+                                    <li><strong>Квалификация:</strong> @i.QualificationDesc</li>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(i.LicenseNumber))
+                                {
+                                    <li><strong>Номер на лиценз:</strong> @i.LicenseNumber</li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="card-modern-footer">
+                            <a asp-action="Details" asp-route-id="@i.Id" class="btn-modern btn-secondary-modern">
+                                Детайли
+                            </a>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</section>
+

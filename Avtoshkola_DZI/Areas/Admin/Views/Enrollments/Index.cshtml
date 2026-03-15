@@ -1,0 +1,74 @@
+@model IEnumerable<Avtoshkola_DZI.Data.StudentCourseInstance>
+@{
+    ViewData["Title"] = "Записи / заявки за курс";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Записи и заявки за курс</h1>
+        <p class="page-subtitle">Всички записвания на курсисти в системата</p>
+    </div>
+</section>
+
+<section class="students-section">
+    <div class="container-students">
+        <div class="section-actions">
+            <a asp-action="Create" class="btn-modern btn-primary-modern">
+                <i class="fas fa-plus"></i>
+                <span>Добави записване</span>
+            </a>
+        </div>
+
+        <div class="students-grid">
+            @foreach (var item in Model)
+            {
+                <div class="student-card">
+                    <div class="student-header">
+                        <div class="student-avatar">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div class="student-info">
+                            <h3>@(item.CourseInstances?.Courses?.Name ?? "Курс")</h3>
+                            <span class="badge bg-primary">
+                                @(item.Student?.FirstName) @(item.Student?.LastName)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="student-body">
+                        <div class="student-detail">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>Курсист: @(item.Student?.FirstName) @(item.Student?.LastName) <small>(@item.StudentId)</small></span>
+                        </div>
+                        <div class="student-detail">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>Инструктор: @(item.Instructor?.FirstName) @(item.Instructor?.LastName) <small>(@item.InstructorId)</small></span>
+                        </div>
+                        <div class="student-detail">
+                            <i class="fas fa-car"></i>
+                            <span>Автомобил: @item.VehicleId <small>(@(item.Vehicles?.Brand) @(item.Vehicles?.Model))</small></span>
+                        </div>
+                        <div class="student-detail">
+                            <i class="fas fa-clock"></i>
+                            <span>Теория: @item.CurrentTheoryHours ч. · Практика: @item.CurrentPracticeHours ч.</span>
+                        </div>
+                        <div class="student-detail">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>Заявка: @item.CreateAt.ToString("dd.MM.yyyy HH:mm")</span>
+                        </div>
+                    </div>
+                    <div class="student-footer">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn-modern btn-secondary-modern btn-sm">
+                            <i class="fas fa-eye"></i> Детайли
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-modern btn-primary-modern btn-sm">
+                            <i class="fas fa-edit"></i> Редактирай
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-modern btn-danger-modern btn-sm">
+                            <i class="fas fa-trash"></i> Изтрий
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

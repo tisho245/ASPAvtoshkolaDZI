@@ -1,0 +1,95 @@
+@page
+@model Avtoshkola_DZI.Areas.Identity.Pages.Account.Manage.IndexModel
+@{
+    ViewData["Title"] = "Моят профил";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Моят профил</h1>
+        <p class="page-subtitle">Вашите данни и настройки</p>
+    </div>
+</section>
+
+<section class="students-section">
+    <div class="container-students">
+        <div class="profile-card-wrapper">
+            <div class="student-card profile-card">
+                <div class="student-header">
+                    <div class="student-avatar profile-avatar">
+                        @if (!string.IsNullOrEmpty(Model.PhotoDataUrl))
+                        {
+                            <img src="@Model.PhotoDataUrl" alt="Профил" class="profile-photo-img" />
+                        }
+                        else
+                        {
+                            <i class="fas fa-user-circle profile-icon-fallback"></i>
+                        }
+                    </div>
+                    <div class="student-info">
+                        <h3>@Model.FirstName @Model.LastName</h3>
+                        <span class="badge bg-primary">@Model.RoleLabel</span>
+                    </div>
+                </div>
+                <div class="student-body">
+                    <div class="student-detail">
+                        <i class="fas fa-at"></i>
+                        <span>@Model.UserName</span>
+                    </div>
+                    <div class="student-detail">
+                        <i class="fas fa-envelope"></i>
+                        <span>@Model.Email</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                    {
+                        <div class="student-detail">
+                            <i class="fas fa-phone"></i>
+                            <span>@Model.PhoneNumber</span>
+                        </div>
+                    }
+                    <div class="student-detail">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>В системата от @Model.CreatedAt</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.EGN))
+                    {
+                        <div class="student-detail">
+                            <i class="fas fa-id-card"></i>
+                            <span>ЕГН: @Model.EGN</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.LicenseNumber))
+                    {
+                        <div class="student-detail">
+                            <i class="fas fa-car"></i>
+                            <span>Шофьорска книжка: @Model.LicenseNumber</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.QualificationDesc))
+                    {
+                        <div class="student-detail">
+                            <i class="fas fa-award"></i>
+                            <span>@Model.QualificationDesc</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="student-detail student-detail-block">
+                            <i class="fas fa-info-circle"></i>
+                            <span>@Model.Description</span>
+                        </div>
+                    }
+                </div>
+                <div class="student-footer profile-actions">
+                    <a asp-page="./Edit" class="btn-modern btn-primary-modern">
+                        <i class="fas fa-edit"></i> Редактирай профил
+                    </a>
+                    <a asp-page="./ChangePassword" class="btn-modern btn-secondary-modern">
+                        <i class="fas fa-key"></i> Смяна на парола
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

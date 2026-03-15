@@ -1,0 +1,98 @@
+@model Avtoshkola_DZI.Data.Client
+@{
+    ViewData["Title"] = "Редактирай инструктор";
+    string photoDataUrl = null;
+    if (Model.PhotoData != null && Model.PhotoData.Length > 0)
+    {
+        var ct = "image/jpeg";
+        if (Model.PhotoData.Length >= 4 && Model.PhotoData[0] == 0x89 && Model.PhotoData[1] == 0x50 && Model.PhotoData[2] == 0x4E && Model.PhotoData[3] == 0x47) ct = "image/png";
+        else if (Model.PhotoData.Length >= 3 && Model.PhotoData[0] == 0x47 && Model.PhotoData[1] == 0x49 && Model.PhotoData[2] == 0x46) ct = "image/gif";
+        else if (Model.PhotoData.Length >= 12 && Model.PhotoData[0] == 0x52 && Model.PhotoData[1] == 0x49 && Model.PhotoData[2] == 0x46 && Model.PhotoData[3] == 0x46 && Model.PhotoData[8] == 0x57 && Model.PhotoData[9] == 0x45 && Model.PhotoData[10] == 0x42 && Model.PhotoData[11] == 0x50) ct = "image/webp";
+        photoDataUrl = "data:" + ct + ";base64," + Convert.ToBase64String(Model.PhotoData);
+    }
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Редактирай инструктор</h1>
+        <p class="page-subtitle">@Model.FirstName @Model.LastName</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="CreatedAt" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="UserName" class="form-label">Потребителско име</label>
+                            <input asp-for="UserName" class="form-control" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">E-mail</label>
+                            <input asp-for="Email" class="form-control" type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label">Име</label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label">Фамилия</label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="PhoneNumber" class="form-label">Телефон</label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="LicenseNumber" class="form-label">Номер книжка</label>
+                            <input asp-for="LicenseNumber" class="form-control" />
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="QualificationDesc" class="form-label">Квалификация и опит</label>
+                            <textarea asp-for="QualificationDesc" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label">Допълнително описание</label>
+                            <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="Photo" class="form-label">Снимка</label>
+                            <input type="file" id="Photo" name="Photo" class="form-control" accept="image/*" />
+                            <div class="mt-2">
+                                @if (photoDataUrl != null)
+                                {
+                                    <img src="@photoDataUrl" alt="Текуща" class="img-fluid rounded" style="max-height:100px; object-fit:cover" />
+                                }
+                                <small class="text-muted d-block">Качете нова снимка, за да заместите текущата.</small>
+                            </div>
+                        </div>
+                        <div class="col-12 text-muted small">Дата на вписване: @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                    </div>
+                    <hr class="my-4" />
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn-modern btn-primary-modern">
+                            <i class="fas fa-save"></i> Запази
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn-modern btn-secondary-modern">Отказ</a>
+                        <a asp-action="Index" class="btn-modern btn-secondary-modern">
+                            <i class="fas fa-arrow-left"></i> Назад
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,94 @@
+@model IEnumerable<Avtoshkola_DZI.Data.StudentCourseInstance>
+@{
+    ViewData["Title"] = "Моите записи";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Моите записи</h1>
+        <p class="page-subtitle">Вашите записвания за курсове</p>
+    </div>
+</section>
+
+<section class="progress-section">
+    <div class="container-progress">
+        <!-- Обобщение за курсиста -->
+        <div class="dashboard-stats mb-4">
+            <div class="stat-card">
+                <div class="stat-icon bg-primary">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Моите записи</h3>
+                    <div class="stat-number">@ViewBag.TotalEnrollments</div>
+                    <p class="stat-label">Активни записвания за курсове</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon bg-success">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Теория</h3>
+                    <div class="stat-number">@ViewBag.TotalTheoryHours</div>
+                    <p class="stat-label">Завършени теоретични часове</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon bg-warning">
+                    <i class="fas fa-car-side"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Практика</h3>
+                    <div class="stat-number">@ViewBag.TotalPracticeHours</div>
+                    <p class="stat-label">Завършени практически часове</p>
+                </div>
+            </div>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <p class="text-muted">Нямате записи. <a asp-action="RequestCourse" asp-controller="Enrollments">Заяви запис за курс</a>.</p>
+        }
+        else
+        {
+            <div class="progress-grid">
+                @foreach (var item in Model)
+                {
+                    var totalHours = item.CurrentTheoryHours + item.CurrentPracticeHours;
+                    <div class="progress-card">
+                        <div class="progress-icon bg-info">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="progress-content">
+                            <h3>@(item.CourseInstances?.Description ?? "Курс")</h3>
+                            <div class="progress-number">@totalHours ч.</div>
+                            <p class="progress-label">
+                                Теория: @item.CurrentTheoryHours ч. · Практика: @item.CurrentPracticeHours ч.
+                            </p>
+                            <p class="progress-label">
+                                @(item.CourseInstances?.Courses?.Name)
+                            </p>
+                            <p class="progress-label">
+                                Инструктор: @(item.Instructor?.FirstName) @(item.Instructor?.LastName)
+                            </p>
+                            <p class="progress-label">
+                                Автомобил: @(item.Vehicles?.Brand) @(item.Vehicles?.Model)
+                            </p>
+                            <p class="progress-label">
+                                Заявка: @item.CreateAt.ToString("dd.MM.yyyy HH:mm")
+                            </p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="mt-4 text-end">
+                <a asp-action="RequestCourse" asp-controller="Enrollments" class="btn-modern btn-primary-modern">
+                    <span>Заяви нов запис за курс</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,90 @@
+@model IEnumerable<Avtoshkola_DZI.Data.StudentCourseInstance>
+@{
+    ViewData["Title"] = "Моят прогрес";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Моят прогрес</h1>
+        <p class="page-subtitle">Следете изкараните теоретични и практически часове по всеки курс</p>
+    </div>
+</section>
+
+<section class="progress-section">
+    <div class="container-progress">
+        @if (!Model.Any())
+        {
+            <div class="progress-empty">
+                <div class="progress-empty-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2>Нямате записи за курсове</h2>
+                <p class="progress-empty-text">Подайте заявка за курс, за да започнете обучение и да следете прогреса си тук.</p>
+                <a asp-area="Student" asp-controller="Enrollments" asp-action="RequestCourse" class="btn-modern btn-primary-modern">
+                    <i class="fas fa-file-alt"></i> Заяви курс
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="progress-grid progress-grid-student">
+                @foreach (var item in Model)
+                {
+                    var totalHours = item.CurrentTheoryHours + item.CurrentPracticeHours;
+                    var course = item.CourseInstances?.Courses;
+                    var totalTheory = course?.TotalTheoryHours ?? 0;
+                    var totalPractice = course?.TotalPracticeHours ?? 0;
+                    var pctTheory = totalTheory > 0 ? Math.Min(100, (item.CurrentTheoryHours * 100) / totalTheory) : 0;
+                    var pctPractice = totalPractice > 0 ? Math.Min(100, (item.CurrentPracticeHours * 100) / totalPractice) : 0;
+                    <div class="progress-card progress-card-student">
+                        <div class="progress-card-header">
+                            <div class="progress-icon bg-primary">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="progress-card-title">
+                                <h3>@(course?.Name ?? "Курс")</h3>
+                                <span class="badge bg-primary">@(item.CourseInstances?.Description ?? "Запис")</span>
+                            </div>
+                        </div>
+                        <div class="progress-content">
+                            <div class="progress-row">
+                                <span class="progress-label">Теория</span>
+                                <span class="progress-value">@item.CurrentTheoryHours / @(totalTheory > 0 ? totalTheory.ToString() : "–") ч.</span>
+                            </div>
+                            @if (totalTheory > 0)
+                            {
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill bg-success" style="width: @pctTheory%"></div>
+                                </div>
+                            }
+                            <div class="progress-row">
+                                <span class="progress-label">Практика</span>
+                                <span class="progress-value">@item.CurrentPracticeHours / @(totalPractice > 0 ? totalPractice.ToString() : "–") ч.</span>
+                            </div>
+                            @if (totalPractice > 0)
+                            {
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill bg-info" style="width: @pctPractice%"></div>
+                                </div>
+                            }
+                            <div class="progress-meta">
+                                <p class="progress-label"><i class="fas fa-chalkboard-teacher"></i> Инструктор: @(item.Instructor?.FirstName) @(item.Instructor?.LastName)</p>
+                                <p class="progress-label"><i class="fas fa-car"></i> Автомобил: @(item.Vehicles?.Brand) @(item.Vehicles?.Model)</p>
+                                <p class="progress-label"><i class="fas fa-calendar-plus"></i> Записан на: @item.CreateAt.ToString("dd.MM.yyyy HH:mm")</p>
+                                @if (item.CourseInstances != null)
+                                {
+                                    <p class="progress-label"><i class="fas fa-calendar-alt"></i> Период: @item.CourseInstances.StartDate.ToString("dd.MM.yyyy") – @item.CourseInstances.EndDate.ToString("dd.MM.yyyy")</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="progress-actions">
+                <a asp-area="Student" asp-controller="Enrollments" asp-action="RequestCourse" class="btn-modern btn-primary-modern">
+                    <i class="fas fa-plus"></i> Заяви нов курс
+                </a>
+            </div>
+        }
+    </div>
+</section>

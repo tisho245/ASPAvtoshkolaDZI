@@ -1,0 +1,55 @@
+@model IEnumerable<Avtoshkola_DZI.Data.Category>
+@{
+    ViewData["Title"] = "Категории";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Категории</h1>
+        <p class="page-subtitle">Управление на категориите за курсове</p>
+    </div>
+</section>
+
+<section class="services-section">
+    <div class="container-services">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="h5 mb-0">Категории за обучение</h2>
+            <a asp-action="Create" class="btn-modern btn-primary-modern">
+                <span>Добави категория</span>
+                <i class="fas fa-plus"></i>
+            </a>
+        </div>
+
+        <div class="services-grid">
+            @foreach (var item in Model)
+            {
+                <div class="service-card">
+                    <div class="service-icon-large">
+                        <i class="fas fa-car-side"></i>
+                    </div>
+                    <h3 class="service-title">@item.Name</h3>
+                    <p class="service-description">
+                        @(string.IsNullOrWhiteSpace(item.Description) ? "Няма въведено описание." : item.Description)
+                    </p>
+                    <ul class="service-features">
+                        <li>
+                            <i class="fas fa-id-card"></i>
+                            ID в системата: @item.Id
+                        </li>
+                    </ul>
+                    <div class="mt-3 d-flex flex-wrap gap-2">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn-modern btn-secondary-modern btn-sm">
+                            <i class="fas fa-eye"></i> Детайли
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-modern btn-primary-modern btn-sm">
+                            <i class="fas fa-edit"></i> Редактирай
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-modern btn-danger-modern btn-sm">
+                            <i class="fas fa-trash"></i> Изтрий
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

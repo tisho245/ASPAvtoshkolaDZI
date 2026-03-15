@@ -1,0 +1,48 @@
+@model Avtoshkola_DZI.Data.Vehicle
+@{
+    ViewData["Title"] = "Детайли автомобил";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Детайли автомобил</h1>
+        <p class="page-subtitle">@Model.Brand @Model.Model</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 text-muted">ИД в системата</dt>
+                    <dd class="col-sm-8">@Model.Id</dd>
+                    <dt class="col-sm-4 text-muted">Марка</dt>
+                    <dd class="col-sm-8">@Model.Brand</dd>
+                    <dt class="col-sm-4 text-muted">Модел</dt>
+                    <dd class="col-sm-8">@Model.Model</dd>
+                    <dt class="col-sm-4 text-muted">Категория</dt>
+                    <dd class="col-sm-8">@(Model.Categories?.Name ?? "—")</dd>
+                    <dt class="col-sm-4 text-muted">Скоростна кутия</dt>
+                    <dd class="col-sm-8">@(Model.IsAutomatic ? "Автоматик" : "Ръчна")</dd>
+                    <dt class="col-sm-4 text-muted">Година</dt>
+                    <dd class="col-sm-8">@Model.Year</dd>
+                    <dt class="col-sm-4 text-muted">Дата на вписване</dt>
+                    <dd class="col-sm-8">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+                </dl>
+                <hr class="my-4" />
+                <div class="d-flex gap-2 flex-wrap">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-modern btn-primary-modern btn-sm">
+                        <i class="fas fa-edit"></i> Редактирай
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn-modern btn-danger-modern btn-sm">
+                        <i class="fas fa-trash"></i> Изтрий
+                    </a>
+                    <a asp-action="Index" class="btn-modern btn-secondary-modern btn-sm">
+                        <i class="fas fa-arrow-left"></i> Назад към списъка
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,67 @@
+@model IEnumerable<Avtoshkola_DZI.Data.Client>
+@{
+    ViewData["Title"] = "Курсисти";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Курсисти</h1>
+        <p class="page-subtitle">Управление на курсистите в системата</p>
+    </div>
+</section>
+
+<section class="students-section">
+    <div class="container-students">
+        <div class="section-actions">
+            <a asp-action="Create" class="btn-modern btn-primary-modern">
+                <i class="fas fa-user-plus"></i>
+                <span>Регистрирай нов курсист</span>
+            </a>
+        </div>
+
+        <div class="students-grid">
+            @foreach (var item in Model)
+            {
+                <div class="student-card">
+                    <div class="student-header">
+                        <div class="student-avatar">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="student-info">
+                            <h3>@item.FirstName @item.LastName</h3>
+                            <span class="badge bg-primary">Курсист</span>
+                        </div>
+                    </div>
+                    <div class="student-body">
+                        <div class="student-detail">
+                            <i class="fas fa-envelope"></i>
+                            <span>@item.Email</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(item.PhoneNumber))
+                        {
+                            <div class="student-detail">
+                                <i class="fas fa-phone"></i>
+                                <span>@item.PhoneNumber</span>
+                            </div>
+                        }
+                        <div class="student-detail">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>В системата от @item.CreatedAt.ToString("dd.MM.yyyy")</span>
+                        </div>
+                    </div>
+                    <div class="student-footer">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn-modern btn-secondary-modern btn-sm">
+                            <i class="fas fa-eye"></i> Детайли
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-modern btn-primary-modern btn-sm">
+                            <i class="fas fa-edit"></i> Редактирай
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-modern btn-danger-modern btn-sm">
+                            <i class="fas fa-trash"></i> Изтрий
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
