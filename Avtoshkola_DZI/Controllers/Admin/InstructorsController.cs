@@ -1,4 +1,4 @@
-using Avtoshkola_DZI.Data;
+using Avtoshkola_DZI.Models;
 using Avtoshkola_DZI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

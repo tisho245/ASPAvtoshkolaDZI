@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Avtoshkola_DZI.Data
+namespace Avtoshkola_DZI.Models
 {
     public static class DbSeed
     {

@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Avtoshkola_DZI.Data
+namespace Avtoshkola_DZI.Models
 {
-    public class Client:IdentityUser
+    public class Client : IdentityUser
     {
         [Required]
         public string FirstName { get; set; }

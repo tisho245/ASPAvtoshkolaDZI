@@ -1,4 +1,4 @@
-using Avtoshkola_DZI.Data;
+using Avtoshkola_DZI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +27,8 @@ namespace Avtoshkola_DZI.Controllers
 
             var list = await _context.StudentCourseInstances
                 .Where(s => s.StudentId == userId)
-                .Include(s => s.CourseInstances).ThenInclude(c => c.Courses)
+                .Include(s => s.CourseInstances)
+                .ThenInclude(c => c.Courses)
                 .Include(s => s.Instructor)
                 .Include(s => s.Vehicles)
                 .OrderByDescending(s => s.CreateAt)

@@ -19,10 +19,10 @@ namespace Avtoshkola_DZI.Data
         public override IdentityError DuplicateUserName(string userName) =>
             new() { Code = nameof(DuplicateUserName), Description = $"Потребителското име \"{userName}\" вече се използва." };
 
-        public override IdentityError InvalidEmail(string email) =>
+        public override IdentityError InvalidEmail(string? email) =>
             new() { Code = nameof(InvalidEmail), Description = $"E-mail адресът \"{email}\" е невалиден." };
 
-        public override IdentityError InvalidUserName(string userName) =>
+        public override IdentityError InvalidUserName(string? userName) =>
             new() { Code = nameof(InvalidUserName), Description = $"Потребителското име \"{userName}\" е невалидно." };
 
         public override IdentityError PasswordTooShort(int length) =>

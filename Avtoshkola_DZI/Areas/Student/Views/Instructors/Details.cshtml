@@ -1,5 +1,5 @@
-@model Avtoshkola_DZI.Data.Client
-@using Avtoshkola_DZI.Data
+@model             Client
+@using Avtoshkola_DZI.Models
 @{
     ViewData["Title"] = "Инструктор";
     var activeCourses = ViewBag.ActiveCourses as IEnumerable<StudentCourseInstance> ?? Enumerable.Empty<StudentCourseInstance>();

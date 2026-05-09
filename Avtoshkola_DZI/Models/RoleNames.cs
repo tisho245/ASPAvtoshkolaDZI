@@ -1,4 +1,4 @@
-namespace Avtoshkola_DZI.Data
+namespace Avtoshkola_DZI.Models
 {
     public static class RoleNames
     {

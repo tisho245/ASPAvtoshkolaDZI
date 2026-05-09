@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Avtoshkola_DZI.Data
+namespace Avtoshkola_DZI.Models
 {
     public class ApplicationDbContext : IdentityDbContext<Client>
     {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Avtoshkola_DZI.Data
+namespace Avtoshkola_DZI.Models
 {
     public class CourseInstance
     {

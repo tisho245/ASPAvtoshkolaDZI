@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using Avtoshkola_DZI.Data;
 using Avtoshkola_DZI.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

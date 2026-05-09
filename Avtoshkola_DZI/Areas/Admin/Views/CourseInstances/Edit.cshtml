@@ -1,4 +1,4 @@
-@model Avtoshkola_DZI.Data.CourseInstance
+@model CourseInstance
 @{
     ViewData["Title"] = "Редактирай текущ курс";
     var durationDays = (Model.EndDate.ToDateTime(TimeOnly.MinValue) - Model.StartDate.ToDateTime(TimeOnly.MinValue)).Days;
