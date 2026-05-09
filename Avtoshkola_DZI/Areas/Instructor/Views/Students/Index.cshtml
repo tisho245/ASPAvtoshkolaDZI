@@ -1,0 +1,71 @@
+@model IEnumerable<Client>
+@{
+    ViewData["Title"] = "Моите курсисти";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Моите курсисти</h1>
+        <p class="page-subtitle">Курсисти, които обучавате в момента</p>
+    </div>
+</section>
+
+<section class="students-section">
+    <div class="container-students">
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h3>Все още нямате курсисти</h3>
+                <p>Когато бъдат назначени курсисти към вас, те ще се появят тук.</p>
+            </div>
+        }
+        else
+        {
+            <div class="students-grid">
+                @foreach (var item in Model)
+                {
+                    <div class="student-card">
+                        <div class="student-header">
+                            <div class="student-avatar">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div class="student-info">
+                                <h3>@item.FirstName @item.LastName</h3>
+                                <span class="badge bg-primary">Курсист</span>
+                            </div>
+                        </div>
+                        <div class="student-body">
+                            <div class="student-detail">
+                                <i class="fas fa-envelope"></i>
+                                <span>@item.Email</span>
+                            </div>
+                            @if (!string.IsNullOrEmpty(item.PhoneNumber))
+                            {
+                                <div class="student-detail">
+                                    <i class="fas fa-phone"></i>
+                                    <span>@item.PhoneNumber</span>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(item.EGN))
+                            {
+                                <div class="student-detail">
+                                    <i class="fas fa-id-card"></i>
+                                    <span>@item.EGN</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="student-footer">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn-modern btn-primary-modern">
+                                <i class="fas fa-eye"></i>
+                                <span>Детайли и прогрес</span>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
