@@ -18,7 +18,6 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
             _context = context;
             _userManager = userManager;
         }
-
         private string GetInstructorId() => _userManager.GetUserId(User);
 
         // Списък с всички мои записи (курсове) – входна точка за CRUD
@@ -38,7 +37,6 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
 
             return View(items);
         }
-
         // Детайли за запис (курс на инструктор)
         public async Task<IActionResult> Details(int? id)
         {
@@ -52,7 +50,6 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
             if (item == null) return NotFound();
             return View(item);
         }
-
         // Редакция на часове по курс
         public async Task<IActionResult> Edit(int? id)
         {
@@ -66,7 +63,6 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
             if (item == null) return NotFound();
             return View(item);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, int currentTheoryHours, int currentPracticeHours)

@@ -4,18 +4,20 @@
 }
 
 <section class="page-header-modern">
+
     <div class="container">
         <h1 class="page-title">Моите курсове</h1>
         <p class="page-subtitle">Всички записи, в които сте инструктор</p>
     </div>
-</section>
 
+</section>
 <section class="progress-section">
     <div class="container-progress">
         @if (!Model.Any())
         {
             <p class="text-muted">Нямате назначени записи.</p>
         }
+
         else
         {
             <div class="progress-grid">
@@ -56,7 +58,8 @@
                     </div>
                 }
             </div>
+
         }
     </div>
-</section>
 
+</section>
