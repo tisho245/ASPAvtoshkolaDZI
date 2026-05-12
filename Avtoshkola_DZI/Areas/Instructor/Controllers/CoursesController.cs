@@ -69,8 +69,32 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
         {
             var instructorId = GetInstructorId();
             var item = await _context.StudentCourseInstances
+                .Include(s => s.CourseInstances)
+                    .ThenInclude(c => c.Courses)
                 .FirstOrDefaultAsync(s => s.Id == id && s.InstructorId == instructorId);
             if (item == null) return NotFound();
+
+            // Валидация за максимални часове
+            var maxTheoryHours = item.CourseInstances?.Courses?.TotalTheoryHours ?? 0;
+            var maxPracticeHours = item.CourseInstances?.Courses?.TotalPracticeHours ?? 0;
+
+            if (currentTheoryHours > maxTheoryHours)
+            {
+                ModelState.AddModelError("", $"Часовете теория ({currentTheoryHours}) не могат да надвишават максималните за курса ({maxTheoryHours}).");
+                return View(item);
+            }
+
+            if (currentPracticeHours > maxPracticeHours)
+            {
+                ModelState.AddModelError("", $"Часовете практика ({currentPracticeHours}) не могат да надвишават максималните за курса ({maxPracticeHours}).");
+                return View(item);
+            }
+
+            if (currentTheoryHours < 0 || currentPracticeHours < 0)
+            {
+                ModelState.AddModelError("", "Часовете не могат да бъдат отрицателни числа.");
+                return View(item);
+            }
 
             item.CurrentTheoryHours = currentTheoryHours;
             item.CurrentPracticeHours = currentPracticeHours;

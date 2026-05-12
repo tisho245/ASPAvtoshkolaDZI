@@ -35,6 +35,23 @@ namespace Avtoshkola_DZI.Areas.Student.Controllers
             if (string.IsNullOrEmpty(userId))
                 return RedirectToAction("Index", "Home", new { area = "" });
 
+            // Валидация за съвпадение на категорията между курса и МПС
+            var courseInstance = await _context.CourseInstances
+                .Include(c => c.Courses)
+                .ThenInclude(c => c.Categories)
+                .FirstOrDefaultAsync(c => c.Id == courseInstanceId);
+            
+            var vehicle = await _context.Vehicles
+                .Include(v => v.Categories)
+                .FirstOrDefaultAsync(v => v.Id == vehicleId);
+
+            if (courseInstance?.Courses?.CategoryId != vehicle?.CategoryId)
+            {
+                ModelState.AddModelError("", $"МПС '{vehicle?.Brand} {vehicle?.Model}' е от категория '{vehicle?.Categories?.Name}', но избраният курс е от категория '{courseInstance?.Courses?.Categories?.Name}'. Моля, изберете МПС от същата категория като курса.");
+                await FillDropdownsAsync();
+                return View();
+            }
+
             var enrollment = new StudentCourseInstance
             {
                 CourseInstanceId = courseInstanceId,
@@ -61,10 +78,15 @@ namespace Avtoshkola_DZI.Areas.Student.Controllers
             ViewBag.CourseInstanceId = new SelectList(
                 instances.Select(i => new { 
                     i.Id, 
-                    Name = $"{i.Courses?.Name} – {i.Description} ({i.StartDate:dd.MM.yy} – {i.EndDate:dd.MM.yy})",
-                    CategoryId = i.Courses?.CategoryId
+                    Name = $"{i.Courses?.Name} – {i.Description} ({i.StartDate:dd.MM.yy} – {i.EndDate:dd.MM.yy})"
                 }),
                 "Id", "Name");
+                
+            ViewBag.CoursesWithCategories = instances.Select(i => new { 
+                i.Id, 
+                Name = $"{i.Courses?.Name} – {i.Description} ({i.StartDate:dd.MM.yy} – {i.EndDate:dd.MM.yy})",
+                CategoryId = i.Courses?.CategoryId.ToString() ?? ""
+            }).ToList();
 
             var instructors = await _userManager.GetUsersInRoleAsync(RoleNames.Instructor);
             ViewBag.InstructorId = new SelectList(

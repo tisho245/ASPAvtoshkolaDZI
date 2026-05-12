@@ -7,16 +7,17 @@
         // Данни за всички автомобили
         var allVehicles = @Html.Raw(Json.Serialize(ViewBag.AllVehicles));
         
-        // Данни за курсовете с категории - използваме CategoryId директно от контролера
-        var coursesWithCategories = [];
-        @foreach (var course in ViewBag.CourseInstanceId as SelectList)
-        {
-            <text>coursesWithCategories.push({ id: '@course.Value', categoryId: '@course.Text.Split('(').Last().Replace(")", "").Trim()' });</text>
-        }
+        // Данни за курсовете с категории - използваме ViewBag.CoursesWithCategories
+        var coursesWithCategories = @Html.Raw(Json.Serialize(ViewBag.CoursesWithCategories ?? new object[0]));
         
         // Функция за филтриране на автомобили по категория
         function filterVehiclesByCategory(courseInstanceId) {
-            var course = coursesWithCategories.find(c => c.id == courseInstanceId);
+            console.log('Filtering vehicles for course ID:', courseInstanceId);
+            console.log('Available courses:', coursesWithCategories);
+            
+            var course = coursesWithCategories.find(c => c.Id == courseInstanceId);
+            console.log('Found course:', course);
+            
             if (!course) {
                 // Ако няма избран курс, показваме всички автомобили
                 populateVehicleDropdown(allVehicles);
@@ -24,18 +25,22 @@
             }
             
             // Извличаме категорията от курса
-            var categoryName = course.categoryId;
+            var categoryId = course.CategoryId;
+            console.log('Course CategoryId:', categoryId);
             
-            if (!categoryName) {
+            if (!categoryId) {
+                console.log('No categoryId found, showing all vehicles');
                 populateVehicleDropdown(allVehicles);
                 return;
             }
             
             // Филтрираме автомобили по категория (сравняваме по CategoryId)
             var filteredVehicles = allVehicles.filter(function(vehicle) {
-                return vehicle.categoryId == categoryName;
+                console.log('Comparing vehicle categoryId:', vehicle.CategoryId, 'with course categoryId:', categoryId);
+                return vehicle.CategoryId == categoryId;
             });
             
+            console.log('Filtered vehicles:', filteredVehicles);
             populateVehicleDropdown(filteredVehicles);
         }
         
