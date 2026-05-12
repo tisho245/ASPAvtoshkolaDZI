@@ -2,6 +2,65 @@
     ViewData["Title"] = "Заявка / записване за курс";
 }
 
+<script>
+    $(document).ready(function() {
+        // Данни за всички автомобили
+        var allVehicles = @Html.Raw(Json.Serialize(ViewBag.AllVehicles));
+        
+        // Данни за курсовете с категории - използваме CategoryId директно от контролера
+        var coursesWithCategories = [];
+        @foreach (var course in ViewBag.CourseInstanceId as SelectList)
+        {
+            <text>coursesWithCategories.push({ id: '@course.Value', categoryId: '@course.Text.Split('(').Last().Replace(")", "").Trim()' });</text>
+        }
+        
+        // Функция за филтриране на автомобили по категория
+        function filterVehiclesByCategory(courseInstanceId) {
+            var course = coursesWithCategories.find(c => c.id == courseInstanceId);
+            if (!course) {
+                // Ако няма избран курс, показваме всички автомобили
+                populateVehicleDropdown(allVehicles);
+                return;
+            }
+            
+            // Извличаме категорията от курса
+            var categoryName = course.categoryId;
+            
+            if (!categoryName) {
+                populateVehicleDropdown(allVehicles);
+                return;
+            }
+            
+            // Филтрираме автомобили по категория (сравняваме по CategoryId)
+            var filteredVehicles = allVehicles.filter(function(vehicle) {
+                return vehicle.categoryId == categoryName;
+            });
+            
+            populateVehicleDropdown(filteredVehicles);
+        }
+        
+        // Попълване на dropdown за автомобили
+        function populateVehicleDropdown(vehicles) {
+            var vehicleSelect = $('select[name="vehicleId"]');
+            vehicleSelect.empty();
+            vehicleSelect.append('<option value="">— Изберете автомобил —</option>');
+            
+            vehicles.forEach(function(vehicle) {
+                vehicleSelect.append('<option value="' + vehicle.id + '">' + vehicle.name + '</option>');
+            });
+        }
+        
+        // При смяна на курса, филтрираме автомобилите
+        $('select[name="courseInstanceId"]').change(function() {
+            var selectedCourseId = $(this).val();
+            filterVehiclesByCategory(selectedCourseId);
+        });
+        
+        // Инициализация
+        filterVehiclesByCategory($('select[name="courseInstanceId"]').val());
+    });
+</script>
+
 <section class="page-header-modern">
     <div class="container">
         <h1 class="page-title">Заяви курс</h1>

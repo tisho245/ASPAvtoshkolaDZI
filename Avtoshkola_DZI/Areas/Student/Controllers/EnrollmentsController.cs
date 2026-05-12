@@ -55,10 +55,15 @@ namespace Avtoshkola_DZI.Areas.Student.Controllers
         {
             var instances = await _context.CourseInstances
                 .Include(c => c.Courses)
+                .ThenInclude(c => c.Categories)
                 .OrderBy(c => c.StartDate)
                 .ToListAsync();
             ViewBag.CourseInstanceId = new SelectList(
-                instances.Select(i => new { i.Id, Name = $"{i.Courses?.Name} – {i.Description} ({i.StartDate:dd.MM.yy} – {i.EndDate:dd.MM.yy})" }),
+                instances.Select(i => new { 
+                    i.Id, 
+                    Name = $"{i.Courses?.Name} – {i.Description} ({i.StartDate:dd.MM.yy} – {i.EndDate:dd.MM.yy})",
+                    CategoryId = i.Courses?.CategoryId
+                }),
                 "Id", "Name");
 
             var instructors = await _userManager.GetUsersInRoleAsync(RoleNames.Instructor);
@@ -67,8 +72,14 @@ namespace Avtoshkola_DZI.Areas.Student.Controllers
                 "Id", "Name");
 
             var vehicles = await _context.Vehicles.Include(v => v.Categories).OrderBy(v => v.Brand).ToListAsync();
+            ViewBag.AllVehicles = vehicles.Select(v => new { 
+                v.Id, 
+                Name = $"{v.Brand} {v.Model} ({v.Categories?.Name})",
+                CategoryId = v.CategoryId
+            }).ToList();
+            
             ViewBag.VehicleId = new SelectList(
-                vehicles.Select(v => new { v.Id, Name = $"{v.Brand} {v.Model} ({v.Categories?.Name})" }),
+                ViewBag.AllVehicles,
                 "Id", "Name");
         }
     }

@@ -83,8 +83,38 @@ namespace Avtoshkola_DZI.Controllers.Admin
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, int courseInstanceId, string studentId, string instructorId, int vehicleId, DateTime createAt, int currentTheoryHours, int currentPracticeHours)
         {
-            var item = await _context.StudentCourseInstances.FindAsync(id);
+            var item = await _context.StudentCourseInstances
+                .Include(s => s.CourseInstances)
+                    .ThenInclude(c => c.Courses)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            
             if (item == null) return NotFound();
+
+            // Валидация за максимални часове
+            var maxTheoryHours = item.CourseInstances?.Courses?.TotalTheoryHours ?? 0;
+            var maxPracticeHours = item.CourseInstances?.Courses?.TotalPracticeHours ?? 0;
+
+            if (currentTheoryHours > maxTheoryHours)
+            {
+                ModelState.AddModelError("", $"Часовете теория ({currentTheoryHours}) не могат да надвишават максималните за курса ({maxTheoryHours}).");
+                await FillDropdownsAsync();
+                return View(item);
+            }
+
+            if (currentPracticeHours > maxPracticeHours)
+            {
+                ModelState.AddModelError("", $"Часовете практика ({currentPracticeHours}) не могат да надвишават максималните за курса ({maxPracticeHours}).");
+                await FillDropdownsAsync();
+                return View(item);
+            }
+
+            if (currentTheoryHours < 0 || currentPracticeHours < 0)
+            {
+                ModelState.AddModelError("", "Часовете не могат да бъдат отрицателни числа.");
+                await FillDropdownsAsync();
+                return View(item);
+            }
+
             item.CourseInstanceId = courseInstanceId;
             item.StudentId = studentId;
             item.InstructorId = instructorId;
