@@ -38,6 +38,8 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
             return View(students);
         }
 
+
+
         // GET: Instructor/Students/Details/5
         public async Task<IActionResult> Details(string? id)
         {
@@ -70,6 +72,8 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
                 return NotFound();
             }
 
+
+
             // Вземи прогреса на курсиста
             var enrollments = await _context.StudentCourseInstances
                 .Include(sci => sci.CourseInstances)
@@ -79,6 +83,8 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
                 .ToListAsync();
 
             ViewBag.Enrollments = enrollments;
+
+
 
             return View(student);
         }

@@ -37,6 +37,9 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
 
             return View(items);
         }
+
+
+
         // Детайли за запис (курс на инструктор)
         public async Task<IActionResult> Details(int? id)
         {
@@ -50,6 +53,8 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
             if (item == null) return NotFound();
             return View(item);
         }
+
+
         // Редакция на часове по курс
         public async Task<IActionResult> Edit(int? id)
         {
@@ -63,6 +68,7 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
             if (item == null) return NotFound();
             return View(item);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, int currentTheoryHours, int currentPracticeHours)
