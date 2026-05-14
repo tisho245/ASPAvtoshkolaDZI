@@ -17,11 +17,11 @@
                 <span class="gradient-text">на ново ниво</span>
             </h1>
             <p class="hero-description">
-                Професионална платформа за управление на студенти, инструктори и графици.
+                Професионална платформа за управление на курсисти, инструктори и графици.
                 Оптимизирайте работата си с интуитивни инструменти и автоматизация.
             </p>
             <div class="hero-actions">
-                <a class="btn-modern btn-primary-modern" asp-controller="RegisterStudent" asp-action="Index">
+                <a class="btn-modern btn-primary-modern" asp-area="Student" asp-controller="RegisterStudent" asp-action="Index">
                     <span>Започнете сега</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
@@ -45,7 +45,7 @@
                     <i class="fas fa-calendar-check"></i>
                 </div>
                 <div class="card-info">
-                    <span class="card-label">Записи</span>
+                    <span class="card-label">Записи на курсове</span>
                     <span class="card-value">@(ViewBag.EnrollmentsCount ?? 0)</span>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <div class="card-info">
-                    <span class="card-label">Курсове</span>
+                    <span class="card-label">Часове</span>
                     <span class="card-value">@(ViewBag.TotalHours ?? 0)</span>
                 </div>
             </div>
@@ -75,7 +75,7 @@
         </div>
         <div class="stat-modern">
             <div class="stat-number-modern">@(ViewBag.TotalHours ?? 0)</div>
-            <div class="stat-label-modern">Курсове (теория + практика)</div>
+            <div class="stat-label-modern">Часове (теория + практика)</div>
         </div>
         <div class="stat-modern">
             <div class="stat-number-modern">@(ViewBag.CategoriesCount ?? 0)</div>
@@ -100,9 +100,9 @@
                         <i class="fas fa-users"></i>
                     </div>
                 </div>
-                <h3 class="feature-title-modern">Управление на студенти</h3>
+                <h3 class="feature-title-modern">Управление на курсисти</h3>
                 <p class="feature-text-modern">
-                    Пълен контрол над регистрацията, прогреса и документацията на студентите.
+                    Пълен контрол над регистрацията, прогреса и документацията на курсистите.
                     Следете теоретичните и практическите часове в реално време.
                 </p>
             </article>
@@ -114,7 +114,7 @@
                 </div>
                 <h3 class="feature-title-modern">Управление на инструктори</h3>
                 <p class="feature-text-modern">
-                    Организирайте работата на инструкторите, техните графици и назначаване на студенти.
+                    Организирайте работата на инструкторите, техните графици и назначаване на курсисти.
                     Оптимизирайте разпределението на ресурсите.
                 </p>
             </article>
@@ -138,7 +138,7 @@
                 </div>
                 <h3 class="feature-title-modern">Детайлно отчитане</h3>
                 <p class="feature-text-modern">
-                    Следете прогреса на всеки студент с детайлни отчети.
+                    Следете прогреса на всеки курсист с детайлни отчети.
                     Виждайте колко теоретични и практически часа са завършени.
                 </p>
             </article>
@@ -162,7 +162,7 @@
                 </div>
                 <h3 class="feature-title-modern">Безопасност и права</h3>
                 <p class="feature-text-modern">
-                    Различни роли за администратори, инструктори и студенти
+                    Различни роли за администратори, инструктори и курсисти
                     с подходящи права за достъп и управление на данни.
                 </p>
             </article>
@@ -182,7 +182,7 @@
                 <div class="quick-icon-modern">
                     <i class="fas fa-calendar-check"></i>
                 </div>
-                <h3 class="quick-title-modern">Моите курсове</h3>
+                <h3 class="quick-title-modern">Моите записи на курсове</h3>
                 <p class="quick-text-modern">Преглед на записаните курсове</p>
             </a>
             <a asp-area="Identity" asp-page="/Account/Manage/Index" class="quick-item-modern">

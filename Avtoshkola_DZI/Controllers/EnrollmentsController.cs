@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace Avtoshkola_DZI.Controllers.Admin
+namespace Avtoshkola_DZI.Controllers
 {
-    [Authorize(Roles = RoleNames.Administrator)]
-    [Area("Admin")]
+    [Authorize]
     public class EnrollmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,6 +19,8 @@ namespace Avtoshkola_DZI.Controllers.Admin
             _userManager = userManager;
         }
 
+        // Admin: Full CRUD access to all enrollments
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Index()
         {
             var list = await _context.StudentCourseInstances
@@ -32,6 +33,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
             return View(list);
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -45,6 +47,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
             return View(item);
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Create()
         {
             await FillDropdownsAsync();
@@ -53,6 +56,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Create(int courseInstanceId, string studentId, string instructorId, int vehicleId)
         {
             var enrollment = new StudentCourseInstance
@@ -70,6 +74,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -81,6 +86,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Edit(int id, int courseInstanceId, string studentId, string instructorId, int vehicleId, DateTime createAt, int currentTheoryHours, int currentPracticeHours)
         {
             var item = await _context.StudentCourseInstances
@@ -126,6 +132,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -141,6 +148,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var item = await _context.StudentCourseInstances.FindAsync(id);
@@ -152,12 +160,62 @@ namespace Avtoshkola_DZI.Controllers.Admin
             return RedirectToAction(nameof(Index));
         }
 
+        // Student: Request course enrollment
+        [Authorize(Roles = RoleNames.CourseStudent)]
+        public async Task<IActionResult> Request()
+        {
+            await FillStudentDropdownsAsync();
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.CourseStudent)]
+        public async Task<IActionResult> Request(int courseInstanceId, string instructorId, int vehicleId)
+        {
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Index", "Home");
+
+            // Валидация за съвпадение на категорията между курса и МПС
+            var courseInstance = await _context.CourseInstances
+                .Include(c => c.Courses)
+                .ThenInclude(c => c.Categories)
+                .FirstOrDefaultAsync(c => c.Id == courseInstanceId);
+            
+            var vehicle = await _context.Vehicles
+                .Include(v => v.Categories)
+                .FirstOrDefaultAsync(v => v.Id == vehicleId);
+
+            if (courseInstance?.Courses?.CategoryId != vehicle?.CategoryId)
+            {
+                ModelState.AddModelError("", $"МПС '{vehicle?.Brand} {vehicle?.Model}' е от категория '{vehicle?.Categories?.Name}', но избраният курс е от категория '{courseInstance?.Courses?.Categories?.Name}'. Моля, изберете МПС от същата категория като курса.");
+                await FillStudentDropdownsAsync();
+                return View();
+            }
+
+            var enrollment = new StudentCourseInstance
+            {
+                CourseInstanceId = courseInstanceId,
+                StudentId = userId,
+                InstructorId = instructorId,
+                VehicleId = vehicleId,
+                CreateAt = DateTime.UtcNow,
+                CurrentTheoryHours = 0,
+                CurrentPracticeHours = 0
+            };
+
+            _context.StudentCourseInstances.Add(enrollment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Home", new { area = "Student" });
+        }
+
         private async Task FillDropdownsAsync(StudentCourseInstance? current = null)
         {
             var instances = await _context.CourseInstances.Include(c => c.Courses).OrderBy(c => c.StartDate).ToListAsync();
             ViewBag.CourseInstanceId = new SelectList(instances.Select(i => new { i.Id, Name = $"{i.Courses?.Name} – {i.Description} (ID: {i.Id})" }), "Id", "Name", current?.CourseInstanceId);
 
-            var students = await _userManager.GetUsersInRoleAsync(RoleNames.Student);
+            var students = await _userManager.GetUsersInRoleAsync(RoleNames.CourseStudent);
             ViewBag.StudentId = new SelectList(students.Select(k => new { k.Id, Name = $"{k.FirstName} {k.LastName} ({k.Email})" }), "Id", "Name", current?.StudentId);
 
             var instructors = await _userManager.GetUsersInRoleAsync(RoleNames.Instructor);
@@ -165,6 +223,43 @@ namespace Avtoshkola_DZI.Controllers.Admin
 
             var vehicles = await _context.Vehicles.Include(v => v.Categories).OrderBy(v => v.Brand).ToListAsync();
             ViewBag.VehicleId = new SelectList(vehicles.Select(v => new { v.Id, Name = $"{v.Brand} {v.Model} (ID: {v.Id})" }), "Id", "Name", current?.VehicleId);
+        }
+
+        private async Task FillStudentDropdownsAsync()
+        {
+            var instances = await _context.CourseInstances
+                .Include(c => c.Courses)
+                .ThenInclude(c => c.Categories)
+                .OrderBy(c => c.StartDate)
+                .ToListAsync();
+            ViewBag.CourseInstanceId = new SelectList(
+                instances.Select(i => new { 
+                    i.Id, 
+                    Name = $"{i.Courses?.Name} – {i.Description} ({i.StartDate:dd.MM.yy} – {i.EndDate:dd.MM.yy})"
+                }),
+                "Id", "Name");
+                
+            ViewBag.CoursesWithCategories = instances.Select(i => new { 
+                i.Id, 
+                Name = $"{i.Courses?.Name} – {i.Description} ({i.StartDate:dd.MM.yy} – {i.EndDate:dd.MM.yy})",
+                CategoryId = i.Courses?.CategoryId.ToString() ?? ""
+            }).ToList();
+
+            var instructors = await _userManager.GetUsersInRoleAsync(RoleNames.Instructor);
+            ViewBag.InstructorId = new SelectList(
+                instructors.Select(i => new { i.Id, Name = $"{i.FirstName} {i.LastName} ({i.Email})" }),
+                "Id", "Name");
+
+            var vehicles = await _context.Vehicles.Include(v => v.Categories).OrderBy(v => v.Brand).ToListAsync();
+            ViewBag.AllVehicles = vehicles.Select(v => new { 
+                v.Id, 
+                Name = $"{v.Brand} {v.Model} ({v.Categories?.Name})",
+                CategoryId = v.CategoryId
+            }).ToList();
+            
+            ViewBag.VehicleId = new SelectList(
+                ViewBag.AllVehicles,
+                "Id", "Name");
         }
     }
 }

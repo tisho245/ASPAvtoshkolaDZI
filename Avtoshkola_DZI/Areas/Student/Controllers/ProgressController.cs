@@ -4,32 +4,34 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Avtoshkola_DZI.Areas.Instructor.Controllers
+namespace Avtoshkola_DZI.Areas.Student.Controllers
 {
-    [Area("Instructor")]
-    [Authorize(Roles = RoleNames.Instructor)]
-    public class HomeController : Controller
+    [Area("Student")]
+    [Authorize(Roles = RoleNames.CourseStudent)]
+    public class ProgressController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<Client> _userManager;
 
-        public HomeController(ApplicationDbContext context, UserManager<Client> userManager)
+        public ProgressController(ApplicationDbContext context, UserManager<Client> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
+        /// <summary>Моят прогрес – записи (StudentCourseInstance) за текущия потребител с часове от таблиците.</summary>
         public async Task<IActionResult> Index(FilterModel? filter = null)
         {
             var userId = _userManager.GetUserId(User);
             if (string.IsNullOrEmpty(userId))
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return View(new List<StudentCourseInstance>());
 
             var query = _context.StudentCourseInstances
-                .Include(s => s.Student)
-                .Include(s => s.CourseInstances).ThenInclude(c => c.Courses)
+                .Where(s => s.StudentId == userId)
+                .Include(s => s.CourseInstances)
+                .ThenInclude(c => c.Courses)
+                .Include(s => s.Instructor)
                 .Include(s => s.Vehicles)
-                .Where(s => s.InstructorId == userId)
                 .AsQueryable();
 
             if (filter != null)
@@ -37,9 +39,9 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
                 if (!string.IsNullOrEmpty(filter.SearchTerm))
                 {
                     query = query.Where(s => 
-                        s.Student!.FirstName.Contains(filter.SearchTerm) ||
-                        s.Student.LastName.Contains(filter.SearchTerm) ||
-                        s.CourseInstances!.Courses!.Name.Contains(filter.SearchTerm));
+                        s.CourseInstances!.Courses!.Name.Contains(filter.SearchTerm) ||
+                        s.Instructor!.FirstName.Contains(filter.SearchTerm) ||
+                        s.Instructor.LastName.Contains(filter.SearchTerm));
                 }
 
                 if (!string.IsNullOrEmpty(filter.CategoryFilter))
@@ -67,16 +69,10 @@ namespace Avtoshkola_DZI.Areas.Instructor.Controllers
                 query = query.OrderByDescending(s => s.CreateAt);
             }
 
-            var enrollments = await query.ToListAsync();
-
-            // Данни за таблото на инструктора
-            ViewBag.TotalEnrollments = enrollments.Count;
-            ViewBag.TotalStudents = enrollments.Select(e => e.StudentId).Distinct().Count();
-            ViewBag.TotalTheoryHours = enrollments.Sum(e => e.CurrentTheoryHours);
-            ViewBag.TotalPracticeHours = enrollments.Sum(e => e.CurrentPracticeHours);
+            var list = await query.ToListAsync();
             ViewBag.Filter = filter ?? new FilterModel();
 
-            return View(enrollments);
+            return View(list);
         }
     }
 }

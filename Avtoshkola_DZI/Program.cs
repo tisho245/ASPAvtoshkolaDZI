@@ -57,9 +57,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "IdentityRegisterStudent",
-    pattern: "Identity/RegisterStudent/{action=Index}/{id?}",
-    defaults: new { controller = "RegisterStudent" });
+    name: "StudentRegister",
+    pattern: "Register/{action=Index}/{id?}",
+    defaults: new { area = "Student", controller = "RegisterStudent" });
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");

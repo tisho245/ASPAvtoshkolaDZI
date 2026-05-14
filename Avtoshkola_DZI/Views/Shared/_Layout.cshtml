@@ -38,15 +38,17 @@
                                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fas fa-cogs"></i> Админ панел</a>
                                     <ul class="dropdown-menu">
                                         <li><h6 class="dropdown-header">Управление на данни</h6></li>
-                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Categories" asp-action="Index"><i class="fas fa-tags"></i> Категории</a></li>
-                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Courses" asp-action="Index"><i class="fas fa-graduation-cap"></i> Обучения</a></li>
-                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="CourseInstances" asp-action="Index"><i class="fas fa-calendar-check"></i> Текущи курсове</a></li>
-                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Vehicles" asp-action="Index"><i class="fas fa-car"></i> Автомобили</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Categories" asp-action="Index"><i class="fas fa-tags"></i> Категории</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Courses" asp-action="Index"><i class="fas fa-graduation-cap"></i> Обучения</a></li>
+                                        <li><a class="dropdown-item" asp-controller="CourseInstances" asp-action="Index"><i class="fas fa-calendar-check"></i> Текущи курсове</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Vehicles" asp-action="Index"><i class="fas fa-car"></i> Автомобили</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><h6 class="dropdown-header">Управление на потребители</h6></li>
-                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Instructors" asp-action="Index"><i class="fas fa-chalkboard-teacher"></i> Инструктори</a></li>
-                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Students" asp-action="Index"><i class="fas fa-user-graduate"></i> Курсисти</a></li>
-                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Enrollments" asp-action="Index"><i class="fas fa-user-plus"></i> Записи за курсове</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Instructors" asp-action="Index"><i class="fas fa-chalkboard-teacher"></i> Инструктори</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Students" asp-action="Index"><i class="fas fa-user-graduate"></i> Курсисти</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Enrollments" asp-action="Index"><i class="fas fa-user-plus"></i> Записи за курсове</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="fas fa-tachometer-alt"></i> Табло</a></li>
                                     </ul>
                                 </li>
                             }
@@ -56,14 +58,14 @@
                                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fas fa-cogs"></i> Инструменти</a>
                                     <ul class="dropdown-menu">
                                         <li><h6 class="dropdown-header">Управление на курсове</h6></li>
-                                        <li><a class="dropdown-item" asp-area="Instructor" asp-controller="Courses" asp-action="Index"><i class="fas fa-list"></i> Детайли на курсове</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Enrollments" asp-action="Index"><i class="fas fa-list"></i> Детайли на курсове</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><h6 class="dropdown-header">Преглед на курсисти</h6></li>
-                                        <li><a class="dropdown-item" asp-area="Instructor" asp-controller="Students" asp-action="Index"><i class="fas fa-users"></i> Мои курсисти</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Students" asp-action="MyStudents"><i class="fas fa-users"></i> Мои курсисти</a></li>
                                     </ul>
                                 </li>
                             }
-                            @if (User.IsInRole(RoleNames.Student))
+                            @if (User.IsInRole(RoleNames.CourseStudent))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="Student" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> <span>Табло</span></a>
@@ -72,10 +74,10 @@
                                     <a class="nav-link" asp-area="Student" asp-controller="Home" asp-action="MyEnrollments"><i class="fas fa-users"></i> <span>Моите записи</span></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="Student" asp-controller="Enrollments" asp-action="RequestCourse"><i class="fas fa-file-alt"></i> <span>Заяви курс</span></a>
+                                    <a class="nav-link" asp-controller="Enrollments" asp-action="Request"><i class="fas fa-file-alt"></i> <span>Заяви курс</span></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Progress" asp-action="Index"><i class="fas fa-chart-line"></i> <span>Моят прогрес</span></a>
+                                    <a class="nav-link" asp-area="Student" asp-controller="Progress" asp-action="Index"><i class="fas fa-chart-line"></i> <span>Моят прогрес</span></a>
                                 </li>
                             }
                         </ul>
@@ -83,7 +85,7 @@
                     }
                     else {
                     <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="RegisterStudent" asp-action="Index"><i class="fas fa-user-plus"></i> Регистрация</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="Student" asp-controller="RegisterStudent" asp-action="Index"><i class="fas fa-user-plus"></i> Регистрация</a></li>
                         <li class="nav-item"><a class="nav-link" asp-area="Identity" asp-page="/Account/Login"><i class="fas fa-sign-in-alt"></i> Вход</a></li>
                     </ul>
                     }

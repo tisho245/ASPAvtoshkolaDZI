@@ -1,4 +1,4 @@
-@model Avtoshkola_DZI.Controllers.RegisterStudentInputModel
+@model Avtoshkola_DZI.Areas.Student.Controllers.RegisterStudentInputModel
 @{
     ViewData["Title"] = "Регистрация като курсист";
 }
@@ -12,9 +12,9 @@
         <div class="auth-card">
             <div class="auth-header">
                 <h1>Регистрация като курсист</h1>
-                <p>Създайте акаунт за достъп до курсовете</p>
+                <p>Създайте акаунт за достъп до системата</p>
             </div>
-            <form asp-controller="RegisterStudent" asp-action="Index" method="post" class="auth-form" enctype="multipart/form-data">
+            <form asp-area="Student" asp-controller="RegisterStudent" asp-action="Index" method="post" class="auth-form" enctype="multipart/form-data">
                 <div asp-validation-summary="All" class="text-danger" role="alert"></div>
                 <div class="form-group">
                     <label asp-for="UserName" class="form-label">Потребителско име</label>

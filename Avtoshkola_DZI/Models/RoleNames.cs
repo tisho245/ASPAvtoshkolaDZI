@@ -4,6 +4,6 @@ namespace Avtoshkola_DZI.Models
     {
         public const string Administrator = "Administrator";
         public const string Instructor = "Instructor";
-        public const string Student = "Student";
+        public const string CourseStudent = "CourseStudent";
     }
 }

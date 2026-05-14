@@ -68,7 +68,7 @@ namespace Avtoshkola_DZI.Areas.Identity.Pages.Account.Manage
 
             if (User.IsInRole(RoleNames.Administrator)) RoleLabel = "Администратор";
             else if (User.IsInRole(RoleNames.Instructor)) RoleLabel = "Инструктор";
-            else if (User.IsInRole(RoleNames.Student)) RoleLabel = "Курсист";
+            else if (User.IsInRole(RoleNames.CourseStudent)) RoleLabel = "Курсист";
             else RoleLabel = "Потребител";
 
             return Page();

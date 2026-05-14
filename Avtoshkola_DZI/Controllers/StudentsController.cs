@@ -1,30 +1,28 @@
 using Avtoshkola_DZI.Models;
-using Avtoshkola_DZI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Avtoshkola_DZI.Controllers.Admin
+namespace Avtoshkola_DZI.Controllers
 {
-    [Authorize(Roles = RoleNames.Administrator)]
-    [Area("Admin")]
+    [Authorize]
     public class StudentsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<Client> _userManager;
-        private readonly PhotoUploadService _photoUpload;
 
-        public StudentsController(ApplicationDbContext context, UserManager<Client> userManager, PhotoUploadService photoUpload)
+        public StudentsController(ApplicationDbContext context, UserManager<Client> userManager)
         {
             _context = context;
             _userManager = userManager;
-            _photoUpload = photoUpload;
         }
 
+        // Admin: Full CRUD access to all students
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Index()
         {
-            var roleId = await _context.Roles.Where(r => r.Name == RoleNames.Student).Select(r => r.Id).FirstOrDefaultAsync();
+            var roleId = await _context.Roles.Where(r => r.Name == RoleNames.CourseStudent).Select(r => r.Id).FirstOrDefaultAsync();
             if (roleId == null) return View(new List<Client>());
             var userIds = await _context.UserRoles.Where(ur => ur.RoleId == roleId).Select(ur => ur.UserId).ToListAsync();
             var students = await _context.Users.OfType<Client>()
@@ -37,22 +35,23 @@ namespace Avtoshkola_DZI.Controllers.Admin
                     LastName = c.LastName,
                     Email = c.Email,
                     PhoneNumber = c.PhoneNumber,
-                    CreatedAt = c.CreatedAt,
                     Description = c.Description ?? ""
                 })
                 .ToListAsync();
             return View(students);
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Details(string? id)
         {
             if (id == null) return NotFound();
             var client = await _context.Users.OfType<Client>().FirstOrDefaultAsync(c => c.Id == id);
-            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.Student))
+            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.CourseStudent))
                 return NotFound();
             return View(client);
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public IActionResult Create()
         {
             return View();
@@ -60,24 +59,20 @@ namespace Avtoshkola_DZI.Controllers.Admin
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [RequestFormLimits(MultipartBodyLengthLimit = 10 * 1024 * 1024)]
-        [RequestSizeLimit(10 * 1024 * 1024)]
-        public async Task<IActionResult> Create([Bind("UserName,FirstName,LastName,Email,PhoneNumber,Description")] Client client, string? password, [FromForm(Name = "Photo")] IFormFile? photoFile)
+        [Authorize(Roles = RoleNames.Administrator)]
+        public async Task<IActionResult> Create([Bind("Id,UserName,FirstName,LastName,Email,PhoneNumber,Description,CreatedAt")] Client client, [FromForm(Name = "Photo")] IFormFile? photoFile, string password)
         {
-            if (string.IsNullOrEmpty(password)) password = "Test123!";
-            client.CreatedAt = DateTime.UtcNow;
-            client.LastSignedIn = client.CreatedAt;
             client.EmailConfirmed = true;
             client.Description ??= "";
             var file = photoFile ?? Request.Form.Files["Photo"];
-            var photoBytes = await _photoUpload.GetPhotoBytesAsync(file);
+            var photoBytes = await GetPhotoBytesAsync(file);
             client.PhotoData = photoBytes;
             if (ModelState.IsValid)
             {
                 var result = await _userManager.CreateAsync(client, password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(client, RoleNames.Student);
+                    await _userManager.AddToRoleAsync(client, RoleNames.CourseStudent);
                     if (photoBytes != null && photoBytes.Length > 0)
                     {
                         var dbUser = await _context.Users.OfType<Client>().FirstOrDefaultAsync(c => c.Id == client.Id);
@@ -87,8 +82,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
                             await _context.SaveChangesAsync();
                         }
                     }
-                    // След създаване – към списъка с всички курсисти в Admin
-                    return RedirectToAction("Index", "Students", new { area = "Admin" });
+                    return RedirectToAction(nameof(Index));
                 }
                 foreach (var e in result.Errors)
                     ModelState.AddModelError(string.Empty, e.Description);
@@ -96,11 +90,12 @@ namespace Avtoshkola_DZI.Controllers.Admin
             return View(client);
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Edit(string? id)
         {
             if (id == null) return NotFound();
             var client = await _context.Users.OfType<Client>().FirstOrDefaultAsync(c => c.Id == id);
-            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.Student))
+            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.CourseStudent))
                 return NotFound();
             return View(client);
         }
@@ -109,74 +104,92 @@ namespace Avtoshkola_DZI.Controllers.Admin
         [ValidateAntiForgeryToken]
         [RequestFormLimits(MultipartBodyLengthLimit = 10 * 1024 * 1024)]
         [RequestSizeLimit(10 * 1024 * 1024)]
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,FirstName,LastName,Email,PhoneNumber,Description,CreatedAt")] Client client, [FromForm(Name = "Photo")] IFormFile? photoFile)
         {
             if (id != client.Id) return NotFound();
-            if (!ModelState.IsValid)
-            {
-                return View(client);
-            }
+            var dbUser = await _context.Users.OfType<Client>().FirstOrDefaultAsync(c => c.Id == id);
+            if (dbUser == null) return NotFound();
 
-            var existing = await _userManager.FindByIdAsync(id);
-            if (existing == null) return NotFound();
+            dbUser.UserName = client.UserName;
+            dbUser.FirstName = client.FirstName;
+            dbUser.LastName = client.LastName;
+            dbUser.Email = client.Email;
+            dbUser.PhoneNumber = client.PhoneNumber;
+            dbUser.Description = client.Description;
 
-            existing.FirstName = client.FirstName;
-            existing.LastName = client.LastName;
-            existing.Email = client.Email;
-            existing.UserName = client.UserName;
-            existing.PhoneNumber = client.PhoneNumber;
-            existing.Description = client.Description ?? "";
-
-            byte[]? photoBytes = null;
             var file = photoFile ?? Request.Form.Files["Photo"];
-            if (file != null && file.Length > 0)
-            {
-                photoBytes = await _photoUpload.GetPhotoBytesAsync(file);
-                if (photoBytes != null) existing.PhotoData = photoBytes;
-            }
-
-            var result = await _userManager.UpdateAsync(existing);
-            if (!result.Succeeded)
-            {
-                foreach (var e in result.Errors)
-                    ModelState.AddModelError(string.Empty, e.Description);
-                return View(client);
-            }
-
+            var photoBytes = await GetPhotoBytesAsync(file);
             if (photoBytes != null && photoBytes.Length > 0)
             {
-                var dbUser = await _context.Users.OfType<Client>().FirstOrDefaultAsync(c => c.Id == id);
-                if (dbUser != null)
-                {
-                    dbUser.PhotoData = photoBytes;
-                    await _context.SaveChangesAsync();
-                }
+                dbUser.PhotoData = photoBytes;
             }
 
-            // След редактиране – към детайли за конкретния курсист в Admin
-            return RedirectToAction("Details", "Students", new { area = "Admin", id });
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await _context.Users.AnyAsync(e => e.Id == client.Id))
+                        return NotFound();
+                    throw;
+                }
+                return RedirectToAction("Details", "Students", new { area = "Admin", id });
+            }
+            return View(client);
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Delete(string? id)
         {
             if (id == null) return NotFound();
             var client = await _userManager.FindByIdAsync(id);
-            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.Student))
+            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.CourseStudent))
                 return NotFound();
             return View(client);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var client = await _userManager.FindByIdAsync(id);
             if (client != null)
             {
-                await _userManager.RemoveFromRoleAsync(client, RoleNames.Student);
+                await _userManager.RemoveFromRoleAsync(client, RoleNames.CourseStudent);
                 await _userManager.DeleteAsync(client);
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        // Instructor: Read-only access to their assigned students
+        [Authorize(Roles = RoleNames.Instructor)]
+        public async Task<IActionResult> MyStudents()
+        {
+            var instructorId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(instructorId))
+                return RedirectToAction("Index", "Home", new { area = "Instructor" });
+
+            var students = await _context.StudentCourseInstances
+                .Include(s => s.Student)
+                .Where(s => s.InstructorId == instructorId)
+                .Select(s => s.Student)
+                .Distinct()
+                .ToListAsync();
+
+            return View(students);
+        }
+
+        private async Task<byte[]> GetPhotoBytesAsync(IFormFile? file)
+        {
+            if (file == null || file.Length == 0) return null!;
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
         }
     }
 }

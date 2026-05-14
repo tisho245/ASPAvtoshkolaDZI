@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Avtoshkola_DZI.Controllers
+namespace Avtoshkola_DZI.Areas.Student.Controllers
 {
+    [Area("Student")]
     [AllowAnonymous]
     public class RegisterStudentController : Controller
     {
@@ -38,7 +39,6 @@ namespace Avtoshkola_DZI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Показваме валидаторските грешки във формата
                 return View(model);
             }
 
@@ -68,7 +68,7 @@ namespace Avtoshkola_DZI.Controllers
                 return View(model);
             }
 
-            await _userManager.AddToRoleAsync(client, RoleNames.Student);
+            await _userManager.AddToRoleAsync(client, RoleNames.CourseStudent);
 
             if (photoBytes != null && photoBytes.Length > 0)
             {

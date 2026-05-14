@@ -1,28 +1,33 @@
 using Avtoshkola_DZI.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace Avtoshkola_DZI.Controllers.Admin
+namespace Avtoshkola_DZI.Controllers
 {
-    [Authorize(Roles = RoleNames.Administrator)]
-    [Area("Admin")]
+    [Authorize]
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Client> _userManager;
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(ApplicationDbContext context, UserManager<Client> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
+        // Admin: Full CRUD access
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Index()
         {
             var list = await _context.Courses.Include(c => c.Categories).ToListAsync();
             return View(list);
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -31,6 +36,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
             return View(course);
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Create()
         {
             ViewData["CategoryId"] = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
@@ -39,6 +45,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Location,TotalTheoryHours,TotalPracticeHours,Price,CategoryId,CreatedAt")] Course course)
         {
             course.CreatedAt = DateTime.UtcNow;
@@ -52,6 +59,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
             return View(course);
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -63,6 +71,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Location,TotalTheoryHours,TotalPracticeHours,Price,CategoryId,CreatedAt")] Course course)
         {
             if (id != course.Id) return NotFound();
@@ -85,6 +94,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
             return View(course);
         }
 
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -95,6 +105,7 @@ namespace Avtoshkola_DZI.Controllers.Admin
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await _context.Courses.FindAsync(id);
@@ -104,6 +115,18 @@ namespace Avtoshkola_DZI.Controllers.Admin
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        // Student: Read-only access to available courses
+        [Authorize(Roles = RoleNames.CourseStudent)]
+        public async Task<IActionResult> Available()
+        {
+            var courses = await _context.Courses
+                .Include(c => c.Categories)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+
+            return View(courses);
         }
     }
 }

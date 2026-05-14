@@ -8,7 +8,7 @@
 <section class="page-header-modern">
     <div class="container">
         <h1 class="page-title">Нашите услуги</h1>
-        <p class="page-subtitle">Курсове от каталога (данни от БД)</p>
+        <p class="page-subtitle">Обучения от каталога (данни от БД)</p>
     </div>
 </section>
 
@@ -17,7 +17,7 @@
         <div class="services-grid">
             @if (!Model.Any())
             {
-                <p class="text-muted">Няма регистрирани курсове в момента.</p>
+                <p class="text-muted">Няма регистрирани обучения в момента.</p>
             }
             @foreach (var course in Model)
             {
