@@ -11,7 +11,7 @@
     var email = user?.Email ?? "";
     var isAdmin = User.IsInRole(RoleNames.Administrator);
     var isInstructor = User.IsInRole(RoleNames.Instructor);
-    var isStudent = User.IsInRole(RoleNames.CourseStudent);
+    var isStudent = User.IsInRole(RoleNames.Student);
     var roleLabel = isAdmin ? "Администратор" : isInstructor ? "Инструктор" : isStudent ? "Курсист" : "Потребител";
 
     string avatarDataUrl = null;

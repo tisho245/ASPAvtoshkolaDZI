@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "Добави записване за курс";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Заявка / записване за курс</h1>
+        <p class="page-subtitle">ИД на курс, клиент, инструктор и автомобил. Датата на заявката се задава автоматично.</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Курс (текущ курс)</label>
+                            <select name="courseInstanceId" class="form-select" asp-items="ViewBag.CourseInstanceId" required>
+                                <option value="">— Изберете курс —</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Курсист</label>
+                            <select name="studentId" class="form-select" asp-items="ViewBag.StudentId" required>
+                                <option value="">— Изберете курсист —</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Инструктор</label>
+                            <select name="instructorId" class="form-select" asp-items="ViewBag.InstructorId" required>
+                                <option value="">— Изберете инструктор —</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Автомобил</label>
+                            <select name="vehicleId" class="form-select" asp-items="ViewBag.VehicleId" required>
+                                <option value="">— Изберете автомобил —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr class="my-4" />
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn-modern btn-primary-modern">
+                            <i class="fas fa-plus"></i> Запази
+                        </button>
+                        <a asp-action="Index" class="btn-modern btn-secondary-modern">
+                            <i class="fas fa-arrow-left"></i> Назад
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

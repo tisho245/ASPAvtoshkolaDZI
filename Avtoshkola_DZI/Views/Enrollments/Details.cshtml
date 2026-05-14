@@ -1,0 +1,112 @@
+@model StudentCourseInstance
+@{
+    ViewData["Title"] = "Детайли записване";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Детайли записване за курс</h1>
+        <p class="page-subtitle">@(Model.CourseInstances?.Courses?.Name) – @(Model.Student?.FirstName) @(Model.Student?.LastName)</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="row g-4 align-items-start">
+                    <div class="col-md-7">
+                        <h2 class="h5 mb-3">Информация за курсиста</h2>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4 text-muted">Курсист</dt>
+                            <dd class="col-sm-8">
+                                <strong>@(Model.Student?.FirstName) @(Model.Student?.LastName)</strong><br />
+                                <span class="text-muted">@Model.Student?.Email</span><br />
+                                @if (!string.IsNullOrEmpty(Model.Student?.PhoneNumber))
+                                {
+                                    <span><i class="fas fa-phone"></i> @Model.Student?.PhoneNumber</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4 text-muted mt-3">Курс</dt>
+                            <dd class="col-sm-8 mt-3">
+                                <strong>@(Model.CourseInstances?.Courses?.Name)</strong><br />
+                                <span class="text-muted">@Model.CourseInstances?.Description</span><br />
+                                <span>
+                                    @Model.CourseInstances?.StartDate.ToString("dd.MM.yyyy")
+                                    –
+                                    @Model.CourseInstances?.EndDate.ToString("dd.MM.yyyy")
+                                </span>
+                            </dd>
+
+                            <dt class="col-sm-4 text-muted mt-3">Инструктор</dt>
+                            <dd class="col-sm-8 mt-3">
+                                <strong>@(Model.Instructor?.FirstName) @(Model.Instructor?.LastName)</strong><br />
+                                <span class="text-muted">@Model.Instructor?.Email</span>
+                            </dd>
+
+                            <dt class="col-sm-4 text-muted mt-3">Автомобил</dt>
+                            <dd class="col-sm-8 mt-3">
+                                <strong>@(Model.Vehicles?.Brand) @(Model.Vehicles?.Model)</strong><br />
+                                <span class="text-muted">ID: @Model.VehicleId</span>
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="border-start ps-4">
+                            <h2 class="h5 mb-3">Прогрес по обучение</h2>
+                            @{
+                                var totalTheory = Model.CourseInstances?.Courses?.TotalTheoryHours ?? 0;
+                                var totalPractice = Model.CourseInstances?.Courses?.TotalPracticeHours ?? 0;
+                                var theoryPercent = totalTheory > 0 ? Math.Clamp((int)(Model.CurrentTheoryHours * 100.0 / totalTheory), 0, 100) : 0;
+                                var practicePercent = totalPractice > 0 ? Math.Clamp((int)(Model.CurrentPracticeHours * 100.0 / totalPractice), 0, 100) : 0;
+                            }
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span><strong>Теория</strong></span>
+                                    <span class="text-muted small">@Model.CurrentTheoryHours ч. / @totalTheory ч.</span>
+                                </div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: @theoryPercent%" aria-valuenow="@theoryPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span><strong>Практика</strong></span>
+                                    <span class="text-muted small">@Model.CurrentPracticeHours ч. / @totalPractice ч.</span>
+                                </div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: @practicePercent%" aria-valuenow="@practicePercent" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <p class="text-muted small mb-2">
+                                <strong>Дата и час на записване:</strong><br />
+                                @Model.CreateAt.ToString("dd.MM.yyyy HH:mm")
+                            </p>
+                            <p class="text-muted small">
+                                <strong>ID на записването:</strong> @Model.Id
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+                <div class="d-flex gap-2 flex-wrap">
+                    @if(User.IsInRole("Administrator")) {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-modern btn-primary-modern btn-sm">
+                            <i class="fas fa-edit"></i> Редактирай
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn-modern btn-danger-modern btn-sm">
+                            <i class="fas fa-trash"></i> Изтрий
+                        </a>
+                    }
+                    <a asp-action="Index" class="btn-modern btn-secondary-modern btn-sm">
+                        <i class="fas fa-arrow-left"></i> Назад към списъка
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

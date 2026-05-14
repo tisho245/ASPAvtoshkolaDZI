@@ -1,0 +1,71 @@
+@model Course
+@{
+    ViewData["Title"] = "Редактирай обучение";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Редактирай обучение</h1>
+        <p class="page-subtitle">@Model.Name</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="CreatedAt" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Name" class="form-label">Име на обучение</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="CategoryId" class="form-label">Категория</label>
+                            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId"></select>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label">Описание / начин на провеждане</label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Price" class="form-label">Цена (EUR)</label>
+                            <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Location" class="form-label">Място / адрес</label>
+                            <input asp-for="Location" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="TotalTheoryHours" class="form-label">Часове теория</label>
+                            <input asp-for="TotalTheoryHours" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="TotalPracticeHours" class="form-label">Часове практика</label>
+                            <input asp-for="TotalPracticeHours" class="form-control" />
+                        </div>
+                        <div class="col-12 text-muted small">Дата на вписване: @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                    </div>
+                    <hr class="my-4" />
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn-modern btn-primary-modern">
+                            <i class="fas fa-save"></i> Запази
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn-modern btn-secondary-modern">Отказ</a>
+                        <a asp-action="Index" class="btn-modern btn-secondary-modern">
+                            <i class="fas fa-arrow-left"></i> Назад
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -152,14 +152,14 @@ namespace Avtoshkola_DZI.Controllers
         }
 
         // Student: Read-only access to list of instructors
-        [Authorize(Roles = RoleNames.CourseStudent)]
+        [Authorize(Roles = RoleNames.Student)]
         public async Task<IActionResult> List()
         {
             var instructors = await _userManager.GetUsersInRoleAsync(RoleNames.Instructor);
             return View(instructors);
         }
 
-        [Authorize(Roles = RoleNames.CourseStudent)]
+        [Authorize(Roles = RoleNames.Student)]
         public async Task<IActionResult> DetailsForStudent(string? id)
         {
             if (id == null) return NotFound();

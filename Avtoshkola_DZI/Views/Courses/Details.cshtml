@@ -1,0 +1,72 @@
+@model Course
+@{
+    ViewData["Title"] = "Детайли обучение";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Детайли обучение</h1>
+        <p class="page-subtitle">@Model.Name</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="row g-4 align-items-start">
+                    <div class="col-md-7">
+                        <h2 class="h5 mb-3">Информация за обучението</h2>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4 text-muted">Име на обучение</dt>
+                            <dd class="col-sm-8">@Model.Name</dd>
+
+                            <dt class="col-sm-4 text-muted">Категория</dt>
+                            <dd class="col-sm-8">@(Model.Categories?.Name ?? "—")</dd>
+
+                            <dt class="col-sm-4 text-muted">Описание</dt>
+                            <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Description) ? "—" : Model.Description)</dd>
+
+                            <dt class="col-sm-4 text-muted">Място</dt>
+                            <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Location) ? "—" : Model.Location)</dd>
+
+                            <dt class="col-sm-4 text-muted">Часове теория / практика</dt>
+                            <dd class="col-sm-8">@Model.TotalTheoryHours / @Model.TotalPracticeHours</dd>
+
+                            <dt class="col-sm-4 text-muted">Дата на вписване</dt>
+                            <dd class="col-sm-8">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="border-start ps-4">
+                            <h2 class="h5 mb-3">Цена и продължителност</h2>
+                            <p class="mb-2">
+                                <strong>Цена:</strong>
+                                <span class="fs-5 text-primary">@Model.Price.ToString("N2") €</span>
+                            </p>
+                            <p class="text-muted small mb-1">
+                                <strong>Общо часове:</strong>
+                                @Model.TotalTheoryHours теория + @Model.TotalPracticeHours практика
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+                <div class="d-flex gap-2 flex-wrap">
+                    @if(User.IsInRole("Administrator")) {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-modern btn-primary-modern btn-sm">
+                            <i class="fas fa-edit"></i> Редактирай
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn-modern btn-danger-modern btn-sm">
+                            <i class="fas fa-trash"></i> Изтрий
+                        </a>
+                    }
+                    <a asp-action="Index" class="btn-modern btn-secondary-modern btn-sm">
+                        <i class="fas fa-arrow-left"></i> Назад към списъка
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

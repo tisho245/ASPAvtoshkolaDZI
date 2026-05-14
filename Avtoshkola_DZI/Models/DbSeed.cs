@@ -174,7 +174,7 @@ namespace Avtoshkola_DZI.Models
                 var result = await userManager.CreateAsync(client, DefaultPassword);
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(client, RoleNames.CourseStudent);
+                    await userManager.AddToRoleAsync(client, RoleNames.Student);
                     studentIds.Add(client.Id);
                 }
             }
@@ -267,11 +267,11 @@ namespace Avtoshkola_DZI.Models
             {
                 var user = await userManager.FindByEmailAsync(email);
                 if (user == null) continue;
-                if (await userManager.IsInRoleAsync(user, RoleNames.CourseStudent)) continue;
+                if (await userManager.IsInRoleAsync(user, RoleNames.Student)) continue;
                 const string legacyRole = "Kursist";
                 if (await userManager.IsInRoleAsync(user, legacyRole))
                     await userManager.RemoveFromRoleAsync(user, legacyRole);
-                await userManager.AddToRoleAsync(user, RoleNames.CourseStudent);
+                await userManager.AddToRoleAsync(user, RoleNames.Student);
             }
         }
 
@@ -361,7 +361,7 @@ namespace Avtoshkola_DZI.Models
                 var result = await userManager.CreateAsync(demoStudent, DefaultPassword);
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(demoStudent, RoleNames.CourseStudent);
+                    await userManager.AddToRoleAsync(demoStudent, RoleNames.Student);
                 }
             }
         }

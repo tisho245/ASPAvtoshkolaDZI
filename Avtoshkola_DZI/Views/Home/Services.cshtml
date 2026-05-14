@@ -1,9 +1,6 @@
 @model IEnumerable<Course>
 @{
     ViewData["Title"] = "Услуги";
-    var iconClasses = new[] { "", "service-icon-2", "service-icon-3", "service-icon-4", "service-icon-5", "service-icon-6" };
-    var icons = new[] { "fa-car", "fa-truck", "fa-bus", "fa-motorcycle", "fa-redo", "fa-book" };
-    var index = 0;
 }
 <section class="page-header-modern">
     <div class="container">
@@ -21,12 +18,9 @@
             }
             @foreach (var course in Model)
             {
-                var iconClass = iconClasses[index % iconClasses.Length];
-                var icon = icons[index % icons.Length];
-                index++;
                 <div class="service-card">
-                    <div class="service-icon-large @iconClass">
-                        <i class="fas @icon"></i>
+                    <div class="service-icon-large">
+                        <i class="fas fa-graduation-cap"></i>
                     </div>
                     <h3 class="service-title">@course.Name</h3>
                     <p class="service-description">

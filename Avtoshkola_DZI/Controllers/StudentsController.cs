@@ -22,7 +22,7 @@ namespace Avtoshkola_DZI.Controllers
         [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Index()
         {
-            var roleId = await _context.Roles.Where(r => r.Name == RoleNames.CourseStudent).Select(r => r.Id).FirstOrDefaultAsync();
+            var roleId = await _context.Roles.Where(r => r.Name == RoleNames.Student).Select(r => r.Id).FirstOrDefaultAsync();
             if (roleId == null) return View(new List<Client>());
             var userIds = await _context.UserRoles.Where(ur => ur.RoleId == roleId).Select(ur => ur.UserId).ToListAsync();
             var students = await _context.Users.OfType<Client>()
@@ -46,7 +46,7 @@ namespace Avtoshkola_DZI.Controllers
         {
             if (id == null) return NotFound();
             var client = await _context.Users.OfType<Client>().FirstOrDefaultAsync(c => c.Id == id);
-            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.CourseStudent))
+            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.Student))
                 return NotFound();
             return View(client);
         }
@@ -72,7 +72,7 @@ namespace Avtoshkola_DZI.Controllers
                 var result = await _userManager.CreateAsync(client, password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(client, RoleNames.CourseStudent);
+                    await _userManager.AddToRoleAsync(client, RoleNames.Student);
                     if (photoBytes != null && photoBytes.Length > 0)
                     {
                         var dbUser = await _context.Users.OfType<Client>().FirstOrDefaultAsync(c => c.Id == client.Id);
@@ -95,9 +95,9 @@ namespace Avtoshkola_DZI.Controllers
         {
             if (id == null) return NotFound();
             var client = await _context.Users.OfType<Client>().FirstOrDefaultAsync(c => c.Id == id);
-            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.CourseStudent))
+            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.Student))
                 return NotFound();
-            return View(client);
+            return View("~/Views/StudentsAdmin/Edit.cshtml", client);
         }
 
         [HttpPost]
@@ -137,9 +137,9 @@ namespace Avtoshkola_DZI.Controllers
                         return NotFound();
                     throw;
                 }
-                return RedirectToAction("Details", "Students", new { area = "Admin", id });
+                return RedirectToAction(nameof(Details), new { id });
             }
-            return View(client);
+            return View("~/Views/StudentsAdmin/Edit.cshtml", client);
         }
 
         [Authorize(Roles = RoleNames.Administrator)]
@@ -147,7 +147,7 @@ namespace Avtoshkola_DZI.Controllers
         {
             if (id == null) return NotFound();
             var client = await _userManager.FindByIdAsync(id);
-            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.CourseStudent))
+            if (client == null || !await _userManager.IsInRoleAsync(client, RoleNames.Student))
                 return NotFound();
             return View(client);
         }
@@ -160,7 +160,7 @@ namespace Avtoshkola_DZI.Controllers
             var client = await _userManager.FindByIdAsync(id);
             if (client != null)
             {
-                await _userManager.RemoveFromRoleAsync(client, RoleNames.CourseStudent);
+                await _userManager.RemoveFromRoleAsync(client, RoleNames.Student);
                 await _userManager.DeleteAsync(client);
             }
             return RedirectToAction(nameof(Index));

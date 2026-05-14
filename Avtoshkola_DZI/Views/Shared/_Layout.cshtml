@@ -65,7 +65,7 @@
                                     </ul>
                                 </li>
                             }
-                            @if (User.IsInRole(RoleNames.CourseStudent))
+                            @if (User.IsInRole(RoleNames.Student))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="Student" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> <span>Табло</span></a>

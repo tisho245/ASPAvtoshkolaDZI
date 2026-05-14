@@ -21,7 +21,7 @@ namespace Avtoshkola_DZI.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var students = await _userManager.GetUsersInRoleAsync(RoleNames.CourseStudent);
+            var students = await _userManager.GetUsersInRoleAsync(RoleNames.Student);
             var instructors = await _userManager.GetUsersInRoleAsync(RoleNames.Instructor);
             var enrollmentsCount = await _context.StudentCourseInstances.CountAsync();
             var totalHours = await _context.StudentCourseInstances
@@ -43,7 +43,7 @@ namespace Avtoshkola_DZI.Controllers
 
         public async Task<IActionResult> About()
         {
-            var students = await _userManager.GetUsersInRoleAsync(RoleNames.CourseStudent);
+            var students = await _userManager.GetUsersInRoleAsync(RoleNames.Student);
             var instructors = await _userManager.GetUsersInRoleAsync(RoleNames.Instructor);
             var categoriesCount = await _context.Categories.CountAsync();
             ViewBag.StudentsCount = students.Count;

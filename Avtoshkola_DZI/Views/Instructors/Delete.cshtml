@@ -1,0 +1,44 @@
+@model Client
+@{
+    ViewData["Title"] = "Изтрий инструктор";
+}
+
+<section class="page-header-modern">
+    <div class="container">
+        <h1 class="page-title">Изтрий инструктор</h1>
+        <p class="page-subtitle">Потвърдете изтриването</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="alert alert-danger mb-4" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Сигурни ли сте, че искате да изтриете този инструктор? Действието не може да бъде отменено.
+                </div>
+                <dl class="row mb-4">
+                    <dt class="col-sm-3 text-muted">Име</dt>
+                    <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
+                    <dt class="col-sm-3 text-muted">Потребителско име</dt>
+                    <dd class="col-sm-9">@Model.UserName</dd>
+                    <dt class="col-sm-3 text-muted">E-mail</dt>
+                    <dd class="col-sm-9">@Model.Email</dd>
+                </dl>
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn-modern btn-danger-modern">
+                            <i class="fas fa-trash"></i> Изтрий
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn-modern btn-secondary-modern">Отказ</a>
+                        <a asp-action="Index" class="btn-modern btn-secondary-modern">
+                            <i class="fas fa-arrow-left"></i> Назад към списъка
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

@@ -81,7 +81,7 @@ namespace Avtoshkola_DZI.Controllers
             var item = await _context.StudentCourseInstances.FindAsync(id);
             if (item == null) return NotFound();
             await FillDropdownsAsync(item);
-            return View(item);
+            return View("~/Views/EnrollmentsAdmin/Edit.cshtml", item);
         }
 
         [HttpPost]
@@ -104,21 +104,21 @@ namespace Avtoshkola_DZI.Controllers
             {
                 ModelState.AddModelError("", $"Часовете теория ({currentTheoryHours}) не могат да надвишават максималните за курса ({maxTheoryHours}).");
                 await FillDropdownsAsync();
-                return View(item);
+                return View("~/Views/EnrollmentsAdmin/Edit.cshtml", item);
             }
 
             if (currentPracticeHours > maxPracticeHours)
             {
                 ModelState.AddModelError("", $"Часовете практика ({currentPracticeHours}) не могат да надвишават максималните за курса ({maxPracticeHours}).");
                 await FillDropdownsAsync();
-                return View(item);
+                return View("~/Views/EnrollmentsAdmin/Edit.cshtml", item);
             }
 
             if (currentTheoryHours < 0 || currentPracticeHours < 0)
             {
                 ModelState.AddModelError("", "Часовете не могат да бъдат отрицателни числа.");
                 await FillDropdownsAsync();
-                return View(item);
+                return View("~/Views/EnrollmentsAdmin/Edit.cshtml", item);
             }
 
             item.CourseInstanceId = courseInstanceId;
@@ -161,8 +161,8 @@ namespace Avtoshkola_DZI.Controllers
         }
 
         // Student: Request course enrollment
-        [Authorize(Roles = RoleNames.CourseStudent)]
-        public async Task<IActionResult> Request()
+        [Authorize(Roles = RoleNames.Student)]
+        new public async Task<IActionResult> Request()
         {
             await FillStudentDropdownsAsync();
             return View();
@@ -170,8 +170,8 @@ namespace Avtoshkola_DZI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = RoleNames.CourseStudent)]
-        public async Task<IActionResult> Request(int courseInstanceId, string instructorId, int vehicleId)
+        [Authorize(Roles = RoleNames.Student)]
+        new public async Task<IActionResult> Request(int courseInstanceId, string instructorId, int vehicleId)
         {
             var userId = _userManager.GetUserId(User);
             if (string.IsNullOrEmpty(userId))
@@ -215,7 +215,7 @@ namespace Avtoshkola_DZI.Controllers
             var instances = await _context.CourseInstances.Include(c => c.Courses).OrderBy(c => c.StartDate).ToListAsync();
             ViewBag.CourseInstanceId = new SelectList(instances.Select(i => new { i.Id, Name = $"{i.Courses?.Name} – {i.Description} (ID: {i.Id})" }), "Id", "Name", current?.CourseInstanceId);
 
-            var students = await _userManager.GetUsersInRoleAsync(RoleNames.CourseStudent);
+            var students = await _userManager.GetUsersInRoleAsync(RoleNames.Student);
             ViewBag.StudentId = new SelectList(students.Select(k => new { k.Id, Name = $"{k.FirstName} {k.LastName} ({k.Email})" }), "Id", "Name", current?.StudentId);
 
             var instructors = await _userManager.GetUsersInRoleAsync(RoleNames.Instructor);
